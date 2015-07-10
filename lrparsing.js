@@ -37,7 +37,7 @@
 
             var node = new Node(obj, str.length - s.length);
 
-            if (obj instanceof lrparsing.Optional) {
+            if (obj instanceof Optional) {
                 nodeRes = walk(obj.optional, node.start, node.childs, rule);
                 if (nodeRes.isValid) {
                     node.end = nodeRes.pos;
@@ -47,13 +47,14 @@
                 return new NodeResult(true, nodeRes.pos);
             }
 
-            if (obj instanceof lrparsing.Sequence) {
+            if (obj instanceof Sequence) {
                 pos = node.start;
                 for (i = 0, l = obj.sequence.length; i < l; i++) {
                     nodeRes = walk(obj.sequence[i], pos, node.childs, rule);
-                    if (nodeRes.isValid) {
+                    if (nodeRes.isValid)
                         pos = nodeRes.pos;
-                    } else return nodeRes;
+                    else
+                        return nodeRes;
                 }
                 node.end = nodeRes.pos;
                 node.str = str.substring(node.start, node.end);
@@ -83,7 +84,7 @@
                     expecting.push(obj);
                 else {
                     expecting.length = 0;
-                    node.end = node.start + reMatch[1].length;
+                    node.end = node.start + reMatch[0].length;
                     node.str = str.substring(node.start, node.end);
                     tree.push(node);
                 }
@@ -95,6 +96,11 @@
                     rule.tested[node.start] = new NodeResult(false, node.start);
                     rule.tested[node.start] = walk(rule.obj, node.start, node.childs, rule);
                 }
+                if (rule.tested[node.start].isValid) {
+                    node.end = rule.tested[node.start].pos;
+                    node.str = str.substring(node.start, node.end);
+                    tree.push(node);
+                }
                 return rule.tested[node.start];
             }
 
@@ -103,19 +109,32 @@
                     rule.tested[node.start] = new NodeResult(false, node.start);
                 }
                 for (i = 0, l = obj.prio.length; i < l; i++) {
+                    var childeren = [];
+                    nodeRes = walk(obj.prio[i], node.start, childeren, rule);
 
-                    nodeRes = walk(obj.prio[i], node.start, node.childs, rule);
-                    // console.log(s, nodeRes, rule.tested);
                     if (nodeRes.isValid && nodeRes.pos > rule.tested[node.start].pos) {
+                        node.childs = childeren;
                         rule.tested[node.start] = nodeRes;
                     }
+                }
+                if (rule.tested[node.start].isValid) {
+                    expecting.length = 0;
+                    node.end = rule.tested[node.start].pos;
+                    node.str = str.substring(node.start, node.end);
+                    tree.push(node);
                 }
                 return rule.tested[node.start];
             }
 
             if (obj instanceof Rule) {
                 obj.tested = {};
-                return walk(obj.obj, node.start, node.childs, obj);
+                nodeRes = walk(obj.obj, node.start, node.childs, obj);
+                if (nodeRes.isValid) {
+                    node.end = nodeRes.pos;
+                    node.str = str.substring(node.start, node.end);
+                    tree.push(node);
+                }
+                return nodeRes;
             }
         };
 
@@ -148,7 +167,7 @@
 
         ignCase = Boolean(ignCase);
         this.re = re;
-        this._re = new RegExp('^(' + re + ')(\\s|$)', ignCase ? 'i' : undefined);
+        this._re = new RegExp('^' + re, ignCase ? 'i' : undefined);
     };
 
     var Root = function (obj, ident) {
