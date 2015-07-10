@@ -5,11 +5,16 @@
     var lrparsing = {};
 
     var RE_LEFT_WHITESPACE = /^\s+/;
+    var RE_DEFAULT_IDENT = /^\w+/;
 
-    var NodeResult = function (isValid, pos, expecting) {
+    var buildIdent = function (re) {
+        return new RegExp('^' + re);
+    };
+
+    var NodeResult = function (isValid, pos) {
         this.isValid = isValid;
         this.pos = pos;
-        this.expecting = expecting;
+        this.expecting = null;
     };
 
     var Node = function (obj, start, end, str) {
@@ -20,66 +25,103 @@
         this.childs = [];
     };
 
-    var parse = function (obj, str, pos, tree, expecting) {
-        var s = str.substring(pos);
-        var isValid, nodeRes, i, l, reMatch;
+    var parse = function (obj, str, tree, ident) {
+        var expecting = [];
 
-        s = s.replace(RE_LEFT_WHITESPACE, '');
+        var walk = function (obj, pos, tree, rule) {
 
-        var node = new Node(obj, str.length - s.length);
+            var s = str.substring(pos);
+            var isValid, nodeRes, i, l, reMatch;
 
-        if (obj instanceof lrparsing.Optional) {
-            nodeRes = parse(obj.optional, str, node.start, node.childs, expecting);
-            if (nodeRes.isValid) {
+            s = s.replace(RE_LEFT_WHITESPACE, '');
+
+            var node = new Node(obj, str.length - s.length);
+
+            if (obj instanceof lrparsing.Optional) {
+                nodeRes = walk(obj.optional, node.start, node.childs, rule);
+                if (nodeRes.isValid) {
+                    node.end = nodeRes.pos;
+                    node.str = str.substring(node.start, node.end);
+                    tree.push(node);
+                }
+                return new NodeResult(true, nodeRes.pos);
+            }
+
+            if (obj instanceof lrparsing.Sequence) {
+                pos = node.start;
+                for (i = 0, l = obj.sequence.length; i < l; i++) {
+                    nodeRes = walk(obj.sequence[i], pos, node.childs, rule);
+                    if (nodeRes.isValid) {
+                        pos = nodeRes.pos;
+                    } else return nodeRes;
+                }
                 node.end = nodeRes.pos;
                 node.str = str.substring(node.start, node.end);
                 tree.push(node);
+                return nodeRes;
             }
-            return new NodeResult(true, nodeRes.pos, nodeRes.expecting);
-        }
 
-        if (obj instanceof lrparsing.Sequence) {
-            pos = node.start;
-            for (i = 0, l = obj.sequence.length; i < l; i++) {
-                nodeRes = parse(obj.sequence[i], str, pos, node.childs, expecting);
-                if (nodeRes.isValid) {
-                    pos = nodeRes.pos;
-                } else return nodeRes;
+            if (obj instanceof Keyword) {
+                reMatch = s.match(ident);
+                isValid = Boolean( reMatch && reMatch[0] === obj.keyword );
+                if (!isValid)
+                    expecting.push(obj);
+                else {
+                    expecting.length = 0;
+                    node.end = node.start + obj.keyword.length;
+                    node.str = str.substring(node.start, node.end);
+                    tree.push(node);
+                }
+                return new NodeResult(isValid, node.end || node.start);
             }
-            node.end = nodeRes.pos;
-            node.str = str.substring(node.start, node.end);
-            tree.push(node);
-            return nodeRes;
-        }
 
-        if (obj instanceof lrparsing.Keyword) {
-            isValid = obj._re.test(s);
-            if (!isValid)
-                expecting.push(obj);
-            else {
-                expecting.length = 0;
-                node.end = node.start + obj.keyword.length;
-                node.str = str.substring(node.start, node.end);
-                tree.push(node);
+            if (obj instanceof Regex) {
+                reMatch = s.match(obj._re);
+                isValid = Boolean(reMatch);
+
+                if (!isValid)
+                    expecting.push(obj);
+                else {
+                    expecting.length = 0;
+                    node.end = node.start + reMatch[1].length;
+                    node.str = str.substring(node.start, node.end);
+                    tree.push(node);
+                }
+                return new NodeResult(isValid, node.end || node.start);
             }
-            return new NodeResult(isValid, node.end || node.start, expecting);
-        }
 
-        if (obj instanceof lrparsing.Regex) {
-            reMatch = s.match(obj._re);
-            isValid = Boolean(reMatch);
-
-            if (!isValid)
-                expecting.push(obj);
-            else {
-                reStr = reStr[1];
-                expecting.length = 0;
-                node.end = node.start + reMatch[1].length;
-                node.str = str.substring(node.start, node.end);
-                tree.push(node);
+            if (obj instanceof This) {
+                if (rule.tested[node.start] === undefined) {
+                    rule.tested[node.start] = new NodeResult(false, node.start);
+                    rule.tested[node.start] = walk(rule.obj, node.start, node.childs, rule);
+                }
+                return rule.tested[node.start];
             }
-            return new NodeResult(isValid, node.end || node.start, expecting);
-        }
+
+            if (obj instanceof Prio) {
+                if (rule.tested[node.start] === undefined) {
+                    rule.tested[node.start] = new NodeResult(false, node.start);
+                }
+                for (i = 0, l = obj.prio.length; i < l; i++) {
+
+                    nodeRes = walk(obj.prio[i], node.start, node.childs, rule);
+                    // console.log(s, nodeRes, rule.tested);
+                    if (nodeRes.isValid && nodeRes.pos > rule.tested[node.start].pos) {
+                        rule.tested[node.start] = nodeRes;
+                    }
+                }
+                return rule.tested[node.start];
+            }
+
+            if (obj instanceof Rule) {
+                obj.tested = {};
+                return walk(obj.obj, node.start, node.childs, obj);
+            }
+        };
+
+        var nodeResult = walk(obj, 0, tree, obj);
+        nodeResult.expecting = expecting;
+        return nodeResult;
     };
 
     // var defaults = function (obj, defs) {
@@ -90,34 +132,39 @@
     //    }
     // };
 
-    lrparsing.Keyword = function (keyword, ignCase) {
-        if (!(this instanceof lrparsing.Keyword))
-            return new lrparsing.Keyword(keyword, ignCase);
+    var Keyword = function (keyword, ignCase) {
+        if (!(this instanceof Keyword))
+            return new Keyword(keyword, ignCase);
 
         ignCase = Boolean(ignCase);
 
         this.keyword = keyword;
         this.ignCase = ignCase;
-        this._re = new RegExp('^' + keyword + '\\b', ignCase ? 'i' : undefined);
     };
 
-    lrparsing.Regex = function (re, ignCase) {
-        if (!(this instanceof lrparsing.Regex))
-            return new lrparsing.Regex(re);
+    var Regex = function (re, ignCase) {
+        if (!(this instanceof Regex))
+            return new Regex(re);
 
         ignCase = Boolean(ignCase);
         this.re = re;
         this._re = new RegExp('^(' + re + ')(\\s|$)', ignCase ? 'i' : undefined);
-
     };
 
-    lrparsing.Root = function (obj) {
-        if (!(this instanceof lrparsing.Root))
-            return new lrparsing.Root(obj);
+    var Root = function (obj, ident) {
+        if (!(this instanceof Root))
+            return new Root(obj, ident);
+
+        if (ident === undefined) ident = RE_DEFAULT_IDENT;
 
         this.parse = function (str) {
             var tree = new Node(this, 0, str.length, str);
-            var nodeRes = parse(obj, str, 0, tree.childs, []);
+            var nodeRes = parse(
+                obj,
+                str,
+                tree.childs,
+                (ident === undefined) ? RE_DEFAULT_IDENT : buildIdent(ident)
+            );
             if (nodeRes.isValid) {
                 var s = str.substring(nodeRes.pos);
                 s = s.replace(RE_LEFT_WHITESPACE, '');
@@ -131,12 +178,12 @@
         };
     };
 
-    lrparsing.Sequence = function (sequence) {
+    var Sequence = function (sequence) {
         if (!(sequence instanceof Array))
             sequence = Array.prototype.slice.call(arguments);
 
-        if (!(this instanceof lrparsing.Sequence))
-            return new lrparsing.Sequence(sequence);
+        if (!(this instanceof Sequence))
+            return new Sequence(sequence);
 
         this.sequence = sequence;
     };
@@ -148,15 +195,45 @@
         this.optional = optional;
     };
 
-    var Rule = function (rule) {
-        if (!(this instanceof Rule))
-            return new Rule(rule);
+    var Prio = function (prio) {
+        if (!(prio instanceof Array))
+            prio = Array.prototype.slice.call(arguments);
 
-        this.rule = rule;
+        if (!(this instanceof Prio))
+            return new Prio(prio);
+
+        this.prio = prio;
+        return (new Rule(this));
     };
 
+    var This = function () {
+        if (!(this instanceof This))
+            return new This();
+    };
+
+    var Ref = function () {
+        if (!(this instanceof Ref))
+            return new Ref();
+
+        this.pos = null;
+    };
+
+    var THIS = new This();
+
+    var Rule = function (obj) {
+        if (!(this instanceof Rule))
+            return new Rule(obj);
+
+        this.obj = obj;
+    };
+
+    lrparsing.Keyword = Keyword;
+    lrparsing.Root = Root;
+    lrparsing.Regex = Regex;
+    lrparsing.Sequence = Sequence;
     lrparsing.Optional = Optional;
-    lrparsing.Rule = Rule;
+    lrparsing.Prio = Prio;
+    lrparsing.THIS = THIS;
 
     window.lrparsing = lrparsing;
 
