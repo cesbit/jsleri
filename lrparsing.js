@@ -11,6 +11,8 @@
         return new RegExp('^' + re);
     };
 
+
+
     var NodeResult = function (isValid, pos) {
         this.isValid = isValid;
         this.pos = pos;
@@ -28,6 +30,13 @@
     var parse = function (obj, str, tree, ident) {
         var expecting = [];
 
+        var appendTree = function (tree, node, pos) {
+            node.end = pos; // rule.tested[node.start].pos;
+            expecting.length = 0;
+            node.str = str.substring(node.start, node.end);
+            tree.push(node);
+        };
+
         var walk = function (obj, pos, tree, rule) {
 
             var s = str.substring(pos);
@@ -39,11 +48,8 @@
 
             if (obj instanceof Optional) {
                 nodeRes = walk(obj.optional, node.start, node.childs, rule);
-                if (nodeRes.isValid) {
-                    node.end = nodeRes.pos;
-                    node.str = str.substring(node.start, node.end);
-                    tree.push(node);
-                }
+                if (nodeRes.isValid)
+                    appendTree(tree, node, nodeRes.pos);
                 return new NodeResult(true, nodeRes.pos);
             }
 
@@ -56,9 +62,18 @@
                     else
                         return nodeRes;
                 }
-                node.end = nodeRes.pos;
-                node.str = str.substring(node.start, node.end);
-                tree.push(node);
+                appendTree(tree, node, nodeRes.pos);
+                return nodeRes;
+            }
+
+            if (obj instanceof Choice) {
+                for (i = 0, l = obj.choice.length; i < l; i++) {
+                    nodeRes = walk(obj.choice[i], node.start, node.childs, rule);
+                    if (nodeRes.isValid) {
+                        appendTree(tree, node, nodeRes.pos);
+                        break;
+                    }
+                }
                 return nodeRes;
             }
 
@@ -67,12 +82,8 @@
                 isValid = Boolean( reMatch && reMatch[0] === obj.keyword );
                 if (!isValid)
                     expecting.push(obj);
-                else {
-                    expecting.length = 0;
-                    node.end = node.start + obj.keyword.length;
-                    node.str = str.substring(node.start, node.end);
-                    tree.push(node);
-                }
+                else
+                    appendTree(tree, node, node.start + obj.keyword.length);
                 return new NodeResult(isValid, node.end || node.start);
             }
 
@@ -82,12 +93,8 @@
 
                 if (!isValid)
                     expecting.push(obj);
-                else {
-                    expecting.length = 0;
-                    node.end = node.start + reMatch[0].length;
-                    node.str = str.substring(node.start, node.end);
-                    tree.push(node);
-                }
+                else
+                    appendTree(tree, node, node.start + reMatch[0].length);
                 return new NodeResult(isValid, node.end || node.start);
             }
 
@@ -96,11 +103,8 @@
                     rule.tested[node.start] = new NodeResult(false, node.start);
                     rule.tested[node.start] = walk(rule.obj, node.start, node.childs, rule);
                 }
-                if (rule.tested[node.start].isValid) {
-                    node.end = rule.tested[node.start].pos;
-                    node.str = str.substring(node.start, node.end);
-                    tree.push(node);
-                }
+                if (rule.tested[node.start].isValid)
+                    appendTree(tree, node, rule.tested[node.start].pos);
                 return rule.tested[node.start];
             }
 
@@ -117,23 +121,16 @@
                         rule.tested[node.start] = nodeRes;
                     }
                 }
-                if (rule.tested[node.start].isValid) {
-                    expecting.length = 0;
-                    node.end = rule.tested[node.start].pos;
-                    node.str = str.substring(node.start, node.end);
-                    tree.push(node);
-                }
+                if (rule.tested[node.start].isValid)
+                    appendTree(tree, node, rule.tested[node.start].pos);
                 return rule.tested[node.start];
             }
 
             if (obj instanceof Rule) {
                 obj.tested = {};
                 nodeRes = walk(obj.obj, node.start, node.childs, obj);
-                if (nodeRes.isValid) {
-                    node.end = nodeRes.pos;
-                    node.str = str.substring(node.start, node.end);
-                    tree.push(node);
-                }
+                if (nodeRes.isValid)
+                    appendTree(tree, node, nodeRes.pos);
                 return nodeRes;
             }
         };
@@ -207,6 +204,16 @@
         this.sequence = sequence;
     };
 
+    var Choice = function (choice) {
+        if (!(choice instanceof Array))
+            choice = Array.prototype.slice.call(arguments);
+
+        if (!(this instanceof Choice))
+            return new Choice(choice);
+
+        this.choice = choice;
+    };
+
     var Optional = function (optional) {
         if (!(this instanceof Optional))
             return new Optional(optional);
@@ -253,7 +260,7 @@
     lrparsing.Optional = Optional;
     lrparsing.Prio = Prio;
     lrparsing.THIS = THIS;
-
+    lrparsing.Choice = Choice;
     window.lrparsing = lrparsing;
 
 
