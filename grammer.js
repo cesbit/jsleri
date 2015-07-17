@@ -310,7 +310,6 @@
     var count_expr = Sequence(k_count, '(', time_expr, ')', Optional(prefix_expr), Optional(suffix_expr));
     var points_expr = Sequence(k_points, Optional(prefix_expr), Optional(suffix_expr));
 
-
     var aggregate_expressions = Choice(
         points_expr,
         mean_expr,
@@ -476,9 +475,19 @@
         k_who_am_i
     )));
 
-    var timeit_stmt = k_timeit;
+    var help = Sequence(k_help, Optional(Choice(
+        Sequence(k_list, Optional(Choice(
+            k_servers,
+            k_users,
+            k_networks,
+            k_pools
+        ))),
+        k_pause,
+        k_continue,
+        k_timeit
+    )));
 
-    var stmt = Sequence(Optional(timeit_stmt), Choice(
+    var stmt = Sequence(Optional(k_timeit), Choice(
         alter_stmt,
         continue_stmt,
         count_stmt,
@@ -490,7 +499,8 @@
         revoke_stmt,
         select_stmt,
         show_stmt,
-        calc_stmt
+        calc_stmt,
+        help
     ));
 
     window.siriGrammer = Root(stmt, '[a-z_]+');
