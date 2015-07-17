@@ -1,5 +1,5 @@
 /*
- *  JavaScript LR-Parsing Module 1.0.1
+ *  JavaScript LR-Parsing Module $VERSION$
  *
  *  Another parser module which allows writing the language in plain JavaScript.
  *  This project was inspired by lrparsing (http://lrparsing.sourceforge.net/), a Python
@@ -7,51 +7,16 @@
  *
  *  copyright 2015, Jeroen van der Heijden (Transceptor Technology)
  */
+
 'use strict';
 
 (function () {
 
+    // all functions and constructors are set on lrparsing.
     var lrparsing = {};
 
+    // dummy function which can be used as alternative for onEnter and onExit methods
     lrparsing.noop = function () {};
-
-    var Lrparsing = function (Cls, args) {
-        args = Array.prototype.slice.call(args);
-
-        if (!(this instanceof Cls))
-            return new (Cls.bind.apply(Cls, [Cls].concat(args)))();
-
-        this.setCallbacks(args);
-        this.args = args;
-    };
-    Lrparsing.prototype.setCallbacks = function (args) {
-        var idx = args.length - 2,
-            first = args[idx],
-            second = args[idx + 1];
-
-        if (isFunction(first)) {
-            this.onEnter = first;
-            this.onExit = second;
-            args.splice(idx, 2);
-        } else if (isFunction(second)) {
-            this.onEnter = second;
-            args.splice(idx + 1, 1);
-        }
-    };
-    Lrparsing.prototype.onEnter = lrparsing.noop;
-    Lrparsing.prototype.onExit = lrparsing.noop;
-    Lrparsing.prototype.checkElements = function (a) {
-        var i = 0, l = a.length;
-        if (l === 0)
-            throw '(Lrparsing-->' + this.constructor.name + ') Need at least one Lrparsing argument';
-        for (; i < l; i++)
-            if (!(a[i] instanceof Lrparsing)) {
-                a[i] = new Token(a[i]);
-            }
-        return a;
-    };
-
-
 
     var RE_LEFT_WHITESPACE = /^\s+/;
     var RE_DEFAULT_IDENT = /^\w+/;
@@ -59,10 +24,6 @@
 
     var isFunction = function (obj) {
         return typeof obj === 'function';
-    };
-
-    var EndOfStatement = function (pos) {
-        this.e = 'End of statement at pos ' + pos;
     };
 
     var buildIdent = function (re) {
@@ -73,63 +34,11 @@
         return a.length < b.length;
     };
 
-    var NodeResult = function (isValid, pos) {
-        this.isValid = isValid;
-        this.pos = pos;
-        this.expecting = null;
-    };
-
-    var Node = function (element, start, end, str) {
-        this.element = element;
-        this.start = start;
-        this.end = end;
-        this.str = str;
-        this.childs = [];
-    };
-    Node.prototype.walk = function () {
-        this.element.onEnter(this);
-        for (var i = 0, l = this.childs.length; i < l; i ++) {
-            this.childs[i].walk();
-        }
-        this.element.onExit(this);
-    };
-
-    var Expecting = function () {
-        this.required = [];
-        this.optional = [];
-        this.pos = 0;
-        this._modes = [this.required];
-
-    };
-    Expecting.prototype.setModeRequired = function (pos, isRequired) {
-        if (this._modes[pos] !== this.optional)
-            this._modes[pos] = (isRequired === false) ? this.optional : this.required;
-    };
-    Expecting.prototype.setModeOptional = function (pos, isOptional) {
-        this._modes[pos] = (isOptional === false) ? this.required : this.optional;
-    };
-    Expecting.prototype.empty = function () {
-        this.required.length = 0;
-        this.optional.length = 0;
-    };
-    Expecting.prototype.update = function (element, pos) {
-        if (pos > this.pos) {
-            this.empty();
-            this.pos = pos;
-        }
-        if (pos === this.pos)
-            this._modes[pos].push(element);
-    };
-    Expecting.prototype.getExpecting = function () {
-        return this.required.concat(this.optional);
-    };
-
-
-
     var parse = function (element, str, tree, ident) {
-
+        // expecting instance, used for returning feedback when statement is invalid
         var expecting = new Expecting();
 
+        // used to add a node to the tree
         var appendTree = function (tree, node, pos) {
             if (pos > expecting.pos) {
                 expecting.empty();
@@ -139,6 +48,7 @@
             tree.push(node);
         };
 
+        // recursive function to 'walk' through the tree
         var walk = function (element, pos, tree, rule, isRequired) {
 
             var s,
@@ -351,15 +261,19 @@
         // get rest if anything
         var rest = str.substring(nodeRes.pos).replace(RE_LEFT_WHITESPACE, '');
 
+        // set isValid to False if we have 'rest' left.
         if (nodeRes.isValid && rest) nodeRes.isValid = false;
 
-        if (!nodeRes.isValid && !expecting.required.length) {
+        // add EndOfStatement to expecting if this is possible
+        if (!expecting.required.length) {
             expecting.setModeRequired(nodeRes.pos, true);
             expecting.update(new EndOfStatement(nodeRes.pos), nodeRes.pos);
         }
 
+        nodeRes.expecting = expecting.getExpecting();
+
+        // add expecting and correct pos to nodeRes if nodeRes is not valid
         if (!nodeRes.isValid) {
-            nodeRes.expecting = expecting.getExpecting();
             nodeRes.pos = expecting.pos;
         }
         // return nodeRes
@@ -374,7 +288,7 @@
         if (obj) return obj;
 
         this.elements = this.checkElements(this.args);
-    };
+    }
     Choice.prototype = Object.create(Lrparsing.prototype);
     Choice.prototype.constructor = Choice;
     lrparsing.Choice = Choice;
@@ -386,18 +300,11 @@
         var obj = Lrparsing.call(this, Keyword, arguments);
         if (obj) return obj;
 
-        // var args = Array.prototype.slice.call(arguments);
-
-        // if (!(this instanceof Keyword))
-        //     return new (Keyword.bind.apply(Keyword, [Keyword].concat(args)))();
-
-        // this.setCallbacks(args);
-
         ignCase = Boolean(ignCase);
 
         this.keyword = keyword;
         this.ignCase = ignCase;
-    };
+    }
     Keyword.prototype = Object.create(Lrparsing.prototype);
     Keyword.prototype.constructor = Keyword;
     lrparsing.Keyword = Keyword;
@@ -430,7 +337,7 @@
     /**************************************************************************
      * Optional constructor
      **************************************************************************/
-    var Optional = function Optional (element) {
+    function Optional (element) {
         var obj = Lrparsing.call(this, Optional, arguments);
         if (obj) return obj;
 
@@ -438,7 +345,7 @@
             throw '(Lrparsing-->Optional) first argument must be an instance of Lrparsing; got ' + typeof element;
 
         this.element = element;
-    };
+    }
     Optional.prototype = Object.create(Lrparsing.prototype);
     Optional.prototype.constructor = Optional;
     lrparsing.Optional = Optional;
@@ -446,13 +353,13 @@
     /**************************************************************************
      * Prio constructor
      **************************************************************************/
-    var Prio = function Prio () {
+    function Prio () {
         var obj = Lrparsing.call(this, Prio, arguments);
         if (obj) return obj;
 
         this.elements = this.checkElements(this.args);
         return (new Rule(this));
-    };
+    }
     Prio.prototype = Object.create(Lrparsing.prototype);
     Prio.prototype.constructor = Prio;
     lrparsing.Prio = Prio;
@@ -460,14 +367,14 @@
     /**************************************************************************
      * Regex constructor
      **************************************************************************/
-    var Regex = function Regex (re, ignCase) {
+    function Regex (re, ignCase) {
         var obj = Lrparsing.call(this, Regex, arguments);
         if (obj) return obj;
 
         ignCase = Boolean(ignCase);
         this.re = re;
         this._re = new RegExp('^' + re, ignCase ? 'i' : undefined);
-    };
+    }
     Regex.prototype = Object.create(Lrparsing.prototype);
     Regex.prototype.constructor = Regex;
     lrparsing.Regex = Regex;
@@ -475,7 +382,7 @@
     /**************************************************************************
      * Repeat constructor
      **************************************************************************/
-    var Repeat = function Repeat (element, _min, _max) {
+    function Repeat (element, _min, _max) {
         var obj = Lrparsing.call(this, Repeat, arguments);
         if (obj) return obj;
 
@@ -485,7 +392,7 @@
         this.element = element;
         this.min = (_min === undefined || _min === null) ? 0 : _min;
         this.max = (_max === undefined || _max === null) ? null : _max;
-    };
+    }
     Repeat.prototype = Object.create(Lrparsing.prototype);
     Repeat.prototype.constructor = Repeat;
     lrparsing.Repeat = Repeat;
@@ -493,7 +400,7 @@
     /**************************************************************************
      * Root constructor
      **************************************************************************/
-    var Root = function Root (element, ident) {
+    function Root (element, ident) {
         var obj = Lrparsing.call(this, Root, arguments);
         if (obj) return obj;
 
@@ -515,7 +422,7 @@
             nodeRes.tree = tree;
             return nodeRes;
         };
-    };
+    }
     Root.prototype = Object.create(Lrparsing.prototype);
     Root.prototype.constructor = Root;
     lrparsing.Root = Root;
@@ -523,7 +430,7 @@
     /**************************************************************************
      * Rule constructor
      **************************************************************************/
-    var Rule = function (element) {
+    function Rule (element) {
         var obj = Lrparsing.call(this, Rule, arguments);
         if (obj) return obj;
 
@@ -531,19 +438,19 @@
             throw '(Lrparsing-->Rule) first argument must be an instance of Lrparsing; got ' + typeof element;
 
         this.element = element;
-    };
+    }
     Rule.prototype = Object.create(Lrparsing.prototype);
     Rule.prototype.constructor = Rule;
 
     /**************************************************************************
      * Sequence constructor
      **************************************************************************/
-    var Sequence = function () {
+    function Sequence () {
         var obj = Lrparsing.call(this, Sequence, arguments);
         if (obj) return obj;
 
         this.elements = this.checkElements(this.args);
-    };
+    }
     Sequence.prototype = Object.create(Lrparsing.prototype);
     Sequence.prototype.constructor = Sequence;
     lrparsing.Sequence = Sequence;
@@ -563,7 +470,7 @@
     /**************************************************************************
      * Token constructor
      **************************************************************************/
-    var Token = function (token) {
+    function Token (token) {
         var obj = Lrparsing.call(this, Token, arguments);
         if (obj) return obj;
 
@@ -571,7 +478,7 @@
             throw '(Lrparsing-->Token) first argument must be a string; got ' + typeof token;
 
         this.token = token;
-    };
+    }
     Token.prototype = Object.create(Lrparsing.prototype);
     Token.prototype.constructor = Token;
     lrparsing.Token = Token;
@@ -579,7 +486,7 @@
     /**************************************************************************
      * Tokens constructor
      **************************************************************************/
-    var Tokens = function (tokens) {
+    function Tokens (tokens) {
         var obj = Lrparsing.call(this, Tokens, arguments);
         if (obj) return obj;
 
@@ -587,10 +494,118 @@
             throw '(Lrparsing-->Tokens) first argument must be a string; got ' + typeof tokens;
 
         this.tokens = tokens.split(RE_WHITESPACE).sort(sortOnStrLen);
-    };
+    }
     Tokens.prototype = Object.create(Lrparsing.prototype);
     Tokens.prototype.constructor = Tokens;
     lrparsing.Tokens = Tokens;
+
+    /**************************************************************************
+     * EndOfStatement constructor
+     **************************************************************************/
+    function EndOfStatement (pos) {
+        this.e = 'End of statement at pos ' + pos;
+    }
+
+    /**************************************************************************
+     * NodeResult constructor
+     **************************************************************************/
+    function NodeResult (isValid, pos) {
+        this.isValid = isValid;
+        this.pos = pos;
+        this.expecting = null;
+    }
+
+    /**************************************************************************
+     * Node constructor
+     **************************************************************************/
+    function Node (element, start, end, str) {
+        this.element = element;
+        this.start = start;
+        this.end = end;
+        this.str = str;
+        this.childs = [];
+    }
+    Node.prototype.walk = function () {
+        this.element.onEnter(this);
+        for (var i = 0, l = this.childs.length; i < l; i ++) {
+            this.childs[i].walk();
+        }
+        this.element.onExit(this);
+    };
+
+    /**************************************************************************
+     * Expecting constructor
+     **************************************************************************/
+    function Expecting () {
+        this.required = [];
+        this.optional = [];
+        this.pos = 0;
+        this._modes = [this.required];
+
+    }
+    Expecting.prototype.setModeRequired = function (pos, isRequired) {
+        if (this._modes[pos] !== this.optional)
+            this._modes[pos] = (isRequired === false) ? this.optional : this.required;
+    };
+    Expecting.prototype.setModeOptional = function (pos, isOptional) {
+        this._modes[pos] = (isOptional === false) ? this.required : this.optional;
+    };
+    Expecting.prototype.empty = function () {
+        this.required.length = 0;
+        this.optional.length = 0;
+    };
+    Expecting.prototype.update = function (element, pos) {
+        if (pos > this.pos) {
+            this.empty();
+            this.pos = pos;
+        }
+        if (pos === this.pos)
+            this._modes[pos].push(element);
+    };
+    Expecting.prototype.getExpecting = function () {
+        return this.required.concat(this.optional);
+    };
+
+    /***************************************************************************
+     * Lrparsing constructor
+     *
+     * All 'other' objects inherit from Lrparsing
+     ***************************************************************************/
+    function Lrparsing (Cls, args) {
+        args = Array.prototype.slice.call(args);
+
+        if (!(this instanceof Cls))
+            return new (Cls.bind.apply(Cls, [Cls].concat(args)))();
+
+        this.setCallbacks(args);
+        this.args = args;
+    }
+    Lrparsing.prototype.setCallbacks = function (args) {
+        var idx = args.length - 2,
+            first = args[idx],
+            second = args[idx + 1];
+
+        if (isFunction(first)) {
+            this.onEnter = first;
+            this.onExit = second;
+            args.splice(idx, 2);
+        } else if (isFunction(second)) {
+            this.onEnter = second;
+            args.splice(idx + 1, 1);
+        }
+    };
+    Lrparsing.prototype.onEnter = lrparsing.noop;
+    Lrparsing.prototype.onExit = lrparsing.noop;
+    Lrparsing.prototype.checkElements = function (a) {
+        var i = 0, l = a.length;
+        if (l === 0)
+            throw '(Lrparsing-->' + this.constructor.name + ') Need at least one Lrparsing argument';
+        for (; i < l; i++)
+            if (!(a[i] instanceof Lrparsing)) {
+                a[i] = new Token(a[i]);
+            }
+        return a;
+    };
 
     // export lrparsing
     window.lrparsing = lrparsing;

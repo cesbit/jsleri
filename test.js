@@ -54,7 +54,6 @@
     // );
 
     // var stmt = Sequence(Optional(k_timeit), k_list, Choice(k_users, k_networks, expr), List(k_that, ',', 1), Optional(k_this));
-
     var stmt = Sequence(k_list, Choice(k_users, k_networks), function (node) {
         console.log('enter stmt', node);
     }, function (node) {
