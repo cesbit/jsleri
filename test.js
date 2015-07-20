@@ -17,6 +17,29 @@
             THIS
         ) {
 
+    var listeners = {
+        root: {
+            onEnter: function (node) {
+                console.log('enter root', node);
+            },
+            onExit: function (node) {
+                console.log('exit root', node);
+            }
+        },
+        mainStmt: {
+            onEnter: function (node) {
+                console.log('enter main stmt', node);
+            },
+            onExit: function (node) {
+                console.log('exit main stmt', node);
+            }
+        },
+        listKeyword: {
+            onEnter: function (node) {
+                console.log('enter list keyword', node);
+            }
+        }
+    };
 
     var k_and = Keyword('and');
     // console.log('k_and', k_and instanceof Keyword);
@@ -24,22 +47,9 @@
     var k_this = Keyword('this');
     var k_that = Keyword('that');
     var k_timeit = Keyword('timeit');
-    var k_list = Keyword(
-        'list',
-        function (node) {
-            console.log('enter k_list...', node);
-        },
-        function (node) {
-            console.log('exit k_list...', node);
-        }
-    );
+    var k_list = new Keyword(listeners.listKeyword, 'list');
     // console.log('k_list', k_list instanceof Keyword);
-    var k_users = new Keyword(
-        'users',
-        function (node) {
-            console.log('enter k_users...', node);
-        }
-    );
+    var k_users = new Keyword('users');
     var k_networks = Keyword('networks');
     // var r_uuid = Regex('[0-9a-f]{8}\\-[0-9a-f]{4}\\-[0-9a-f]{4}\\-[0-9a-f]{4}\\-[0-9a-f]{12}');
 
@@ -54,13 +64,11 @@
     // );
 
     // var stmt = Sequence(Optional(k_timeit), k_list, Choice(k_users, k_networks, expr), List(k_that, ',', 1), Optional(k_this));
-    var stmt = Sequence(k_list, Choice(k_users, k_networks), function (node) {
-        console.log('enter stmt', node);
-    }, function (node) {
-        console.log('exit stmt', node);
-    });
+    var stmt = Sequence(listeners.mainStmt,
+        k_list, Choice(k_users, k_networks), Optional(k_this));
+
     // console.log('stmt', stmt instanceof Sequence);
-    window.grammer = Root(stmt);
+    window.grammer = Root(listeners.root, stmt);
 })(
     window.lrparsing.Choice,
     window.lrparsing.Keyword,
@@ -85,7 +93,7 @@
     // parseResult = siriGrammer.parse('help list server');
     // parseResult.tree.walk();
 
-    parseResult = grammer.parse('list users');
+    parseResult = grammer.parse('   list users this');
     parseResult.tree.walk();
     window.console.log(parseResult);
     // window.console.log(grammer.parse('list this<that and(this == that or this < that) that, that'));

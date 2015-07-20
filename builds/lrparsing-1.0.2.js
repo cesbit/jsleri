@@ -1,5 +1,5 @@
 /*
- *  JavaScript LR-Parsing Module $VERSION$
+ *  JavaScript LR-Parsing Module 1.0.2
  *
  *  Another parser module which allows writing the language in plain JavaScript.
  *  This project was inspired by lrparsing (http://lrparsing.sourceforge.net/), a Python
@@ -265,17 +265,16 @@
         if (nodeRes.isValid && rest) nodeRes.isValid = false;
 
         // add EndOfStatement to expecting if this is possible
-        if (!expecting.required.length && rest) {
+        if (!nodeRes.isValid && !expecting.required.length) {
             expecting.setModeRequired(nodeRes.pos, true);
             expecting.update(new EndOfStatement(nodeRes.pos), nodeRes.pos);
         }
 
-        nodeRes.expecting = expecting.getExpecting();
-
         // add expecting and correct pos to nodeRes if nodeRes is not valid
-        if (!nodeRes.isValid)
+        if (!nodeRes.isValid) {
+            nodeRes.expecting = expecting.getExpecting();
             nodeRes.pos = expecting.pos;
-
+        }
         // return nodeRes
         return nodeRes;
     };
@@ -300,11 +299,10 @@
         var obj = Lrparsing.call(this, Keyword, arguments);
         if (obj) return obj;
 
-        keyword = this.args[0];
-        ignCase = this.args[1];
+        ignCase = Boolean(ignCase);
 
         this.keyword = keyword;
-        this.ignCase = Boolean(ignCase);
+        this.ignCase = ignCase;
     }
     Keyword.prototype = Object.create(Lrparsing.prototype);
     Keyword.prototype.constructor = Keyword;
@@ -316,12 +314,6 @@
     var List = function List (element, delimiter, _min, _max, opt) {
         var obj = Lrparsing.call(this, List, arguments);
         if (obj) return obj;
-
-        element = this.args[0];
-        delimiter = this.args[1];
-        _min = this.args[2];
-        _max = this.args[3];
-        opt = this.args[4];
 
         if (!(element instanceof Lrparsing))
             throw '(Lrparsing-->List) first argument must be an instance of Lrparsing; got ' + typeof element;
@@ -347,8 +339,6 @@
     function Optional (element) {
         var obj = Lrparsing.call(this, Optional, arguments);
         if (obj) return obj;
-
-        element = this.args[0];
 
         if (!(element instanceof Lrparsing))
             throw '(Lrparsing-->Optional) first argument must be an instance of Lrparsing; got ' + typeof element;
@@ -380,11 +370,9 @@
         var obj = Lrparsing.call(this, Regex, arguments);
         if (obj) return obj;
 
-        re = this.args[0];
-        ignCase = this.args[1];
-
+        ignCase = Boolean(ignCase);
         this.re = re;
-        this._re = new RegExp('^' + re, Boolean(ignCase) ? 'i' : undefined);
+        this._re = new RegExp('^' + re, ignCase ? 'i' : undefined);
     }
     Regex.prototype = Object.create(Lrparsing.prototype);
     Regex.prototype.constructor = Regex;
@@ -396,10 +384,6 @@
     function Repeat (element, _min, _max) {
         var obj = Lrparsing.call(this, Repeat, arguments);
         if (obj) return obj;
-
-        element = this.args[0];
-        _min = this.args[1];
-        _max = this.args[2];
 
         if (!(element instanceof Lrparsing))
             throw '(Lrparsing-->Repeat) first argument must be an instance of Lrparsing; got ' + typeof element;
@@ -418,9 +402,6 @@
     function Root (element, ident) {
         var obj = Lrparsing.call(this, Root, arguments);
         if (obj) return obj;
-
-        element = this.args[0];
-        ident = this.args[1];
 
         if (!(element instanceof Lrparsing))
             throw '(Lrparsing-->Optional) first argument must be an instance of Lrparsing; got ' + typeof element;
@@ -451,8 +432,6 @@
     function Rule (element) {
         var obj = Lrparsing.call(this, Rule, arguments);
         if (obj) return obj;
-
-        element = this.args[0];
 
         if (!(element instanceof Lrparsing))
             throw '(Lrparsing-->Rule) first argument must be an instance of Lrparsing; got ' + typeof element;
@@ -494,8 +473,6 @@
         var obj = Lrparsing.call(this, Token, arguments);
         if (obj) return obj;
 
-        token = this.args[0];
-
         if (typeof token !== 'string')
             throw '(Lrparsing-->Token) first argument must be a string; got ' + typeof token;
 
@@ -512,8 +489,6 @@
         var obj = Lrparsing.call(this, Tokens, arguments);
         if (obj) return obj;
 
-        tokens = this.args[0];
-
         if (typeof tokens !== 'string')
             throw '(Lrparsing-->Tokens) first argument must be a string; got ' + typeof tokens;
 
@@ -526,12 +501,9 @@
     /**************************************************************************
      * EndOfStatement constructor
      **************************************************************************/
-    function EndOfStatement () {
-        this.e = 'End of statement';
+    function EndOfStatement (pos) {
+        this.e = 'End of statement at pos ' + pos;
     }
-    EndOfStatement.prototype = Object.create(Lrparsing.prototype);
-    EndOfStatement.prototype.constructor = EndOfStatement;
-    lrparsing.EndOfStatement = EndOfStatement;
 
     /**************************************************************************
      * NodeResult constructor
@@ -574,6 +546,9 @@
         if (this._modes[pos] !== this.optional)
             this._modes[pos] = (isRequired === false) ? this.optional : this.required;
     };
+    Expecting.prototype.setModeOptional = function (pos, isOptional) {
+        this._modes[pos] = (isOptional === false) ? this.required : this.optional;
+    };
     Expecting.prototype.empty = function () {
         this.required.length = 0;
         this.optional.length = 0;
@@ -605,20 +580,18 @@
         this.args = args;
     }
     Lrparsing.prototype.setCallbacks = function (args) {
-        var first = args[0];
+        var idx = args.length - 2,
+            first = args[idx],
+            second = args[idx + 1];
 
-        if (first === undefined ||
-            first === null ||
-            typeof first === 'string' ||
-            first instanceof Lrparsing) return;
-
-        if (isFunction(first.onEnter))
-            this.onEnter = first.onEnter;
-
-        if (isFunction(first.onExit))
-            this.onExit = first.onExit;
-
-        args.splice(0, 1);
+        if (isFunction(first)) {
+            this.onEnter = first;
+            this.onExit = second;
+            args.splice(idx, 2);
+        } else if (isFunction(second)) {
+            this.onEnter = second;
+            args.splice(idx + 1, 1);
+        }
     };
     Lrparsing.prototype.onEnter = lrparsing.noop;
     Lrparsing.prototype.onExit = lrparsing.noop;

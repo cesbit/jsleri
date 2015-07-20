@@ -1,5 +1,5 @@
 /*
- *  JavaScript LR-Parsing Module $VERSION$
+ *  JavaScript LR-Parsing Module 1.0.3
  *
  *  Another parser module which allows writing the language in plain JavaScript.
  *  This project was inspired by lrparsing (http://lrparsing.sourceforge.net/), a Python
@@ -573,6 +573,9 @@
     Expecting.prototype.setModeRequired = function (pos, isRequired) {
         if (this._modes[pos] !== this.optional)
             this._modes[pos] = (isRequired === false) ? this.optional : this.required;
+    };
+    Expecting.prototype.setModeOptional = function (pos, isOptional) {
+        this._modes[pos] = (isOptional === false) ? this.required : this.optional;
     };
     Expecting.prototype.empty = function () {
         this.required.length = 0;
