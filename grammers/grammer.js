@@ -22,7 +22,8 @@
         r_singleq_str = Regex('(?:\'(?:[^\']*)\')+'),
         r_doubleq_str = Regex('(?:"(?:[^"]*)")+'),
         r_grave_str = Regex('(?:`(?:[^`]*)`)+'),
-        r_regex = Regex('(/[^/\\\\]*(?:\\\\.[^/\\\\]*)*/i?)');
+        r_regex = Regex('(/[^/\\\\]*(?:\\\\.[^/\\\\]*)*/i?)'),
+        r_comment = Regex('#.*');
 
     var k_access = Keyword('access'),
         k_address = Keyword('address'),
@@ -501,7 +502,7 @@
         show_stmt,
         calc_stmt,
         help
-    ));
+    ), Optional(r_comment));
 
     window.siriGrammer = Root(stmt, '[a-z_]+');
 })(

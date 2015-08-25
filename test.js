@@ -89,12 +89,11 @@
     var start = +new Date();
     var parseResult;
     // window.console.log(siriGrammer.parse('timeit select * from "series-001"'));
-    // window.console.log(siriGrammer.parse('select sum(4h) from `messagehubs`/.*influx.*/i merge as "Records streamed per 4 hours to SiriDB in last 28 days" using sum(1 + 5 - 6) after now - 28d'));
+    window.console.log(siriGrammer.parse('select sum(4h) from `messagehubs`/.*influx.*/i merge as "Records streamed per 4 hours to SiriDB in last 28 days" using sum(1 + 5 - 6) after now - 28d'));
     // parseResult = siriGrammer.parse('help list server');
     // parseResult.tree.walk();
 
-    parseResult = grammer.parse('   list users this');
-    parseResult.tree.walk();
+    parseResult = siriGrammer.parse('alter server "sdvds" s');
     window.console.log(parseResult);
     // window.console.log(grammer.parse('list this<that and(this == that or this < that) that, that'));
     // window.console.log(grammer.parse('timeit list that and that'));

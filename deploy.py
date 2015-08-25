@@ -2,7 +2,7 @@
 
 from slimit import minify
 
-VERSION = '1.0.3'
+VERSION = '1.0.4'
 
 with open('lrparsing.js', 'r') as f:
     content = f.read().replace('$VERSION$', VERSION)

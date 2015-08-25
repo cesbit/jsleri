@@ -1,5 +1,5 @@
 /*
- *  JavaScript LR-Parsing Module $VERSION$
+ *  JavaScript LR-Parsing Module 1.0.4
  *
  *  Another parser module which allows writing the language in plain JavaScript.
  *  This project was inspired by lrparsing (http://lrparsing.sourceforge.net/), a Python
