@@ -10,7 +10,7 @@
             Prio,
             Regex,
             Repeat,
-            Root,
+            Grammar,
             Sequence,
             Token,
             Tokens,
@@ -68,7 +68,7 @@
         k_list, Choice(k_users, k_networks), Optional(k_this));
 
     // console.log('stmt', stmt instanceof Sequence);
-    window.grammer = Root(listeners.root, stmt);
+    window.grammar = Grammar(listeners.root, stmt);
 })(
     window.lrparsing.Choice,
     window.lrparsing.Keyword,
@@ -77,7 +77,7 @@
     window.lrparsing.Prio,
     window.lrparsing.Regex,
     window.lrparsing.Repeat,
-    window.lrparsing.Root,
+    window.lrparsing.Grammar,
     window.lrparsing.Sequence,
     window.lrparsing.Token,
     window.lrparsing.Tokens,
@@ -85,15 +85,16 @@
 );
 
 
-(function (grammer, siriGrammer) {
+(function (grammar, siriGrammar) {
     var start = +new Date();
     var parseResult;
-    // window.console.log(siriGrammer.parse('timeit select * from "series-001"'));
-    window.console.log(siriGrammer.parse('select sum(4h) from `messagehubs`/.*influx.*/i merge as "Records streamed per 4 hours to SiriDB in last 28 days" using sum(1 + 5 - 6) after now - 28d'));
-    // parseResult = siriGrammer.parse('help list server');
+    // window.console.log(siriGrammar.parse('timeit select * from "series-001"'));
+    window.console.log(siriGrammar.parse('timeit show dbn'));
+    window.console.log(siriGrammar.parse('select sum(4h) from `messagehubs`/.*influx.*/i merge as "Records streamed per 4 hours to SiriDB in last 28 days" using sum(1 + 5 - 6) after now - 28d'));
+    // parseResult = siriGrammar.parse('help list server');
     // parseResult.tree.walk();
 
-    parseResult = siriGrammer.parse('alter server "sdvds" s');
+    parseResult = siriGrammar.parse('alter server "sdvds" s');
     window.console.log(parseResult);
     // window.console.log(grammer.parse('list this<that and(this == that or this < that) that, that'));
     // window.console.log(grammer.parse('timeit list that and that'));
@@ -101,7 +102,7 @@
     // window.console.log(grammer.parse('  select 00dda9e4-20be-11e5-965f-080027f37001 from'));
     // var a = grammer.parse('that and that or (that and that)');
     // window.console.log(a.isValid, +new Date() - start);
-})(window.grammer, window.siriGrammer);
+})(window.grammar, window.siriGrammar);
 
 // select sum(4h) from `messagehubs`/.*influx.*/i merge as "Records streamed per 4 hours to SiriDB in last 28 days" using sum(1 + 5 - 6) afte now - 28d
 'list this<that and(this == that or this < that) that, that, that this this this'

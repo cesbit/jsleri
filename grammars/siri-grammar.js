@@ -9,7 +9,7 @@
             Optional,
             Prio,
             Regex,
-            Root,
+            Grammar,
             Sequence,
             Token,
             Tokens,
@@ -504,7 +504,7 @@
         help
     ), Optional(r_comment));
 
-    window.siriGrammer = Root(stmt, '[a-z_]+');
+    window.siriGrammar = Grammar(stmt, '[a-z_]+');
 })(
     window.lrparsing.Choice,
     window.lrparsing.Keyword,
@@ -512,7 +512,7 @@
     window.lrparsing.Optional,
     window.lrparsing.Prio,
     window.lrparsing.Regex,
-    window.lrparsing.Root,
+    window.lrparsing.Grammar,
     window.lrparsing.Sequence,
     window.lrparsing.Token,
     window.lrparsing.Tokens,
