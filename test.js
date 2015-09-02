@@ -85,16 +85,16 @@
 );
 
 
-(function (grammar, siriGrammar) {
+(function (grammar, SiriGrammar) {
     var start = +new Date();
     var parseResult;
-    // window.console.log(siriGrammar.parse('timeit select * from "series-001"'));
-    window.console.log(siriGrammar.parse('timeit show dbn'));
-    window.console.log(siriGrammar.parse('select sum(4h) from `messagehubs`/.*influx.*/i merge as "Records streamed per 4 hours to SiriDB in last 28 days" using sum(1 + 5 - 6) after now - 28d'));
-    // parseResult = siriGrammar.parse('help list server');
+    // window.console.log(SiriGrammar.parse('timeit select * from "series-001"'));
+    window.console.log(SiriGrammar.parse('timeit show dbn'));
+    window.console.log(SiriGrammar.parse('select sum(4h) from `messagehubs`/.*influx.*/i merge as "Records streamed per 4 hours to SiriDB in last 28 days" using sum(1 + 5 - 6) after now - 28d'));
+    // parseResult = SiriGrammar.parse('help list server');
     // parseResult.tree.walk();
 
-    parseResult = siriGrammar.parse('alter server "sdvds" s');
+    parseResult = SiriGrammar.parse('alter server "sdvds" s');
     window.console.log(parseResult);
     // window.console.log(grammer.parse('list this<that and(this == that or this < that) that, that'));
     // window.console.log(grammer.parse('timeit list that and that'));
@@ -102,7 +102,7 @@
     // window.console.log(grammer.parse('  select 00dda9e4-20be-11e5-965f-080027f37001 from'));
     // var a = grammer.parse('that and that or (that and that)');
     // window.console.log(a.isValid, +new Date() - start);
-})(window.grammar, window.siriGrammar);
+})(window.grammar, window.SiriGrammar);
 
 // select sum(4h) from `messagehubs`/.*influx.*/i merge as "Records streamed per 4 hours to SiriDB in last 28 days" using sum(1 + 5 - 6) afte now - 28d
 'list this<that and(this == that or this < that) that, that, that this this this'

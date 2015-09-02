@@ -332,11 +332,11 @@
         if (!(element instanceof Lrparsing))
             throw '(Lrparsing-->List) first argument must be an instance of Lrparsing; got ' + typeof element;
 
-        if (typeof delimiter !== 'string')
-            throw '(Lrparsing-->List) second argument must be a string; got ' + typeof delimiter;
+        if (typeof delimiter !== 'string' && !(delimiter instanceof Token))
+            throw '(Lrparsing-->List) second argument must be a string or Token; got ' + typeof delimiter;
 
         this.element = element;
-        this.delimiter = new Token(delimiter);
+        this.delimiter = (delimiter instanceof Token) ? delimiter : new Token(delimiter);
         this.min = (_min === undefined || _min === null) ? 0 : _min;
         this.max = (_max === undefined || _max === null) ? null : _max;
 
