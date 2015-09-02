@@ -1,5 +1,5 @@
 /*
- *  JavaScript LR-Parsing Module 1.0.5
+ *  JavaScript LR-Parsing Module 1.0.6
  *
  *  Another parser module which allows writing the language in plain JavaScript.
  *  This project was inspired by lrparsing (http://lrparsing.sourceforge.net/), a Python
@@ -19,14 +19,14 @@
     lrparsing.noop = function () {};
 
     var RE_LEFT_WHITESPACE = /^\s+/;
-    var RE_DEFAULT_IDENT = /^\w+/;
+    var RE_KEYWORDS = /^\w+/;
     var RE_WHITESPACE = /\s+/;
 
     var isFunction = function (obj) {
         return typeof obj === 'function';
     };
 
-    var buildIdent = function (re) {
+    var buildReKeywords = function (re) {
         return new RegExp('^' + re);
     };
 
@@ -34,7 +34,7 @@
         return a.length < b.length;
     };
 
-    var parse = function (element, str, tree, ident) {
+    var parse = function (element, str, tree, reKeywords) {
         // expecting instance, used for returning feedback when statement is invalid
         var expecting = new Expecting();
 
@@ -91,7 +91,7 @@
              * Keyword
              **************************************************************************/
             if (element instanceof Keyword) {
-                reMatch = s.match(ident);
+                reMatch = s.match(reKeywords);
                 isValid = Boolean( reMatch && reMatch[0] === element.keyword );
                 if (isValid)
                     appendTree(tree, node, node.start + element.keyword.length);
@@ -332,11 +332,11 @@
         if (!(element instanceof Lrparsing))
             throw '(Lrparsing-->List) first argument must be an instance of Lrparsing; got ' + typeof element;
 
-        if (typeof delimiter !== 'string')
-            throw '(Lrparsing-->List) second argument must be a string; got ' + typeof delimiter;
+        if (typeof delimiter !== 'string' && !(delimiter instanceof Token))
+            throw '(Lrparsing-->List) second argument must be a string or Token; got ' + typeof delimiter;
 
         this.element = element;
-        this.delimiter = new Token(delimiter);
+        this.delimiter = (delimiter instanceof Token) ? delimiter : new Token(delimiter);
         this.min = (_min === undefined || _min === null) ? 0 : _min;
         this.max = (_max === undefined || _max === null) ? null : _max;
 
@@ -421,17 +421,17 @@
     /**************************************************************************
      * Grammar constructor
      **************************************************************************/
-    function Grammar (element, ident) {
+    function Grammar (element, reKeywords) {
         var obj = Lrparsing.call(this, Grammar, arguments);
         if (obj) return obj;
 
         element = this.args[0];
-        ident = this.args[1];
+        reKeywords = this.args[1];
 
         if (!(element instanceof Lrparsing))
             throw '(Lrparsing-->Optional) first argument must be an instance of Lrparsing; got ' + typeof element;
 
-        this.ident = (ident === undefined) ? RE_DEFAULT_IDENT : buildIdent(ident);
+        this.reKeywords = (reKeywords === undefined) ? RE_KEYWORDS : buildReKeywords(reKeywords);
         this.element = element;
 
         this.parse = function (str) {
@@ -440,7 +440,7 @@
                 element,
                 str,
                 tree.children,
-                this.ident
+                this.reKeywords
             );
 
             nodeRes.tree = tree;
