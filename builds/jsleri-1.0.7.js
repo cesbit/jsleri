@@ -1,5 +1,5 @@
 /*
- *  JavaScript LR-Parsing Module $VERSION$
+ *  JS-LeRi - JavaScript LR-Parsing Module 1.0.7
  *
  *  Another parser module which allows writing the language in plain JavaScript.
  *  This project was inspired by lrparsing (http://lrparsing.sourceforge.net/), a Python
@@ -12,11 +12,11 @@
 
 (function () {
 
-    // all functions and constructors are set on lrparsing.
-    var lrparsing = {};
+    // all functions and constructors are set on jsleri.
+    var jsleri = {};
 
     // dummy function which can be used as alternative for onEnter and onExit methods
-    lrparsing.noop = function () {};
+    jsleri.noop = function () {};
 
     var RE_LEFT_WHITESPACE = /^\s+/;
     var RE_KEYWORDS = /^\w+/;
@@ -297,7 +297,7 @@
     }
     Choice.prototype = Object.create(Lrparsing.prototype);
     Choice.prototype.constructor = Choice;
-    lrparsing.Choice = Choice;
+    jsleri.Choice = Choice;
 
     /**************************************************************************
      * Keyword constructor
@@ -314,7 +314,7 @@
     }
     Keyword.prototype = Object.create(Lrparsing.prototype);
     Keyword.prototype.constructor = Keyword;
-    lrparsing.Keyword = Keyword;
+    jsleri.Keyword = Keyword;
 
     /**************************************************************************
      * List constructor
@@ -345,7 +345,7 @@
     };
     List.prototype = Object.create(Lrparsing.prototype);
     List.prototype.constructor = List;
-    lrparsing.List = List;
+    jsleri.List = List;
 
     /**************************************************************************
      * Optional constructor
@@ -363,7 +363,7 @@
     }
     Optional.prototype = Object.create(Lrparsing.prototype);
     Optional.prototype.constructor = Optional;
-    lrparsing.Optional = Optional;
+    jsleri.Optional = Optional;
 
     /**************************************************************************
      * Prio constructor
@@ -377,7 +377,7 @@
     }
     Prio.prototype = Object.create(Lrparsing.prototype);
     Prio.prototype.constructor = Prio;
-    lrparsing.Prio = Prio;
+    jsleri.Prio = Prio;
 
     /**************************************************************************
      * Regex constructor
@@ -394,7 +394,7 @@
     }
     Regex.prototype = Object.create(Lrparsing.prototype);
     Regex.prototype.constructor = Regex;
-    lrparsing.Regex = Regex;
+    jsleri.Regex = Regex;
 
     /**************************************************************************
      * Repeat constructor
@@ -416,7 +416,7 @@
     }
     Repeat.prototype = Object.create(Lrparsing.prototype);
     Repeat.prototype.constructor = Repeat;
-    lrparsing.Repeat = Repeat;
+    jsleri.Repeat = Repeat;
 
     /**************************************************************************
      * Grammar constructor
@@ -449,7 +449,7 @@
     }
     Grammar.prototype = Object.create(Lrparsing.prototype);
     Grammar.prototype.constructor = Grammar;
-    lrparsing.Grammar = Grammar;
+    jsleri.Grammar = Grammar;
 
     /**************************************************************************
      * Rule constructor
@@ -479,7 +479,7 @@
     }
     Sequence.prototype = Object.create(Lrparsing.prototype);
     Sequence.prototype.constructor = Sequence;
-    lrparsing.Sequence = Sequence;
+    jsleri.Sequence = Sequence;
 
     /**************************************************************************
      * This constructor --> THIS
@@ -491,7 +491,7 @@
     This.prototype = Object.create(Lrparsing.prototype);
     This.prototype.constructor = This;
     var THIS = new This();
-    lrparsing.THIS = THIS;
+    jsleri.THIS = THIS;
 
     /**************************************************************************
      * Token constructor
@@ -509,7 +509,7 @@
     }
     Token.prototype = Object.create(Lrparsing.prototype);
     Token.prototype.constructor = Token;
-    lrparsing.Token = Token;
+    jsleri.Token = Token;
 
     /**************************************************************************
      * Tokens constructor
@@ -527,7 +527,7 @@
     }
     Tokens.prototype = Object.create(Lrparsing.prototype);
     Tokens.prototype.constructor = Tokens;
-    lrparsing.Tokens = Tokens;
+    jsleri.Tokens = Tokens;
 
     /**************************************************************************
      * EndOfStatement constructor
@@ -537,7 +537,7 @@
     }
     EndOfStatement.prototype = Object.create(Lrparsing.prototype);
     EndOfStatement.prototype.constructor = EndOfStatement;
-    lrparsing.EndOfStatement = EndOfStatement;
+    jsleri.EndOfStatement = EndOfStatement;
 
     /**************************************************************************
      * NodeResult constructor
@@ -626,8 +626,8 @@
 
         args.splice(0, 1);
     };
-    Lrparsing.prototype.onEnter = lrparsing.noop;
-    Lrparsing.prototype.onExit = lrparsing.noop;
+    Lrparsing.prototype.onEnter = jsleri.noop;
+    Lrparsing.prototype.onExit = jsleri.noop;
     Lrparsing.prototype.checkElements = function (a) {
         var i = 0, l = a.length;
         if (l === 0)
@@ -639,7 +639,7 @@
         return a;
     };
 
-    // export lrparsing
-    window.lrparsing = lrparsing;
+    // export jsleri
+    window.jsleri = jsleri;
 
 })();
