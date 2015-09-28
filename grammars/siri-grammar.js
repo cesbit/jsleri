@@ -851,18 +851,18 @@
     window.SiriGrammar = Grammar(START, '[a-z_]+');
 
 })(
-    window.lrparsing.Choice,
-    window.lrparsing.Token,
-    window.lrparsing.Rule,
-    window.lrparsing.Optional,
-    window.lrparsing.Prio,
-    window.lrparsing.Tokens,
-    window.lrparsing.Keyword,
-    window.lrparsing.THIS,
-    window.lrparsing.Regex,
-    window.lrparsing.Repeat,
-    window.lrparsing.Sequence,
-    window.lrparsing.List,
-    window.lrparsing.Grammar
+    window.jsleri.Choice,
+    window.jsleri.Token,
+    window.jsleri.Rule,
+    window.jsleri.Optional,
+    window.jsleri.Prio,
+    window.jsleri.Tokens,
+    window.jsleri.Keyword,
+    window.jsleri.THIS,
+    window.jsleri.Regex,
+    window.jsleri.Repeat,
+    window.jsleri.Sequence,
+    window.jsleri.List,
+    window.jsleri.Grammar
 );
 

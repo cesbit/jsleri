@@ -70,18 +70,18 @@
     // console.log('stmt', stmt instanceof Sequence);
     window.grammar = Grammar(listeners.root, stmt);
 })(
-    window.lrparsing.Choice,
-    window.lrparsing.Keyword,
-    window.lrparsing.List,
-    window.lrparsing.Optional,
-    window.lrparsing.Prio,
-    window.lrparsing.Regex,
-    window.lrparsing.Repeat,
-    window.lrparsing.Grammar,
-    window.lrparsing.Sequence,
-    window.lrparsing.Token,
-    window.lrparsing.Tokens,
-    window.lrparsing.THIS
+    window.jsleri.Choice,
+    window.jsleri.Keyword,
+    window.jsleri.List,
+    window.jsleri.Optional,
+    window.jsleri.Prio,
+    window.jsleri.Regex,
+    window.jsleri.Repeat,
+    window.jsleri.Grammar,
+    window.jsleri.Sequence,
+    window.jsleri.Token,
+    window.jsleri.Tokens,
+    window.jsleri.THIS
 );
 
 

@@ -2,7 +2,7 @@
 
 from slimit import minify
 
-VERSION = '1.0.7'
+VERSION = '1.0.8'
 
 with open('jsleri.js', 'r') as f:
     content = f.read().replace('$VERSION$', VERSION)
