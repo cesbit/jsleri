@@ -108,7 +108,7 @@ Example:
 
 ```javascript
 
-var START = Keyword('tic-tac-toe', ign_case=true),
+var START = jsleri.Keyword('tic-tac-toe', true),
     grammar = jsleri.Grammar(START, '[A-Za-z-]+');
 
 grammar.parse('Tic-Tac-Toe').isValid  // => true
