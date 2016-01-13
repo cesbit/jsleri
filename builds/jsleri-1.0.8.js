@@ -27,7 +27,10 @@
     };
 
     var buildReKeywords = function (re) {
-        return new RegExp('^' + re);
+        if (typeof re === 'string' && re.indexOf('^', 0) !== 0) {
+            re = '^' + re;
+        }
+        return new RegExp(re);
     };
 
     var sortOnStrLen = function (a, b) {
@@ -92,7 +95,9 @@
              **************************************************************************/
             if (element instanceof Keyword) {
                 reMatch = s.match(reKeywords);
-                isValid = Boolean( reMatch && reMatch[0] === element.keyword );
+                isValid = element.ignCase ?
+                    Boolean( reMatch && reMatch[0].toLowerCase() === element.keyword.toLowerCase() ) :
+                    Boolean( reMatch && reMatch[0] === element.keyword );
                 if (isValid)
                     appendTree(tree, node, node.start + element.keyword.length);
                 else
@@ -296,7 +301,7 @@
         this.elements = this.checkElements(this.args);
     }
     Choice.prototype = Object.create(Jsleri.prototype);
-    Choice.prototype.constructor = Choice;
+    Choice.prototype.constzructor = Choice;
     jsleri.Choice = Choice;
 
     /**************************************************************************
