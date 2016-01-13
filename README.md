@@ -40,6 +40,8 @@ In real word you would probably want to write a separate grammar file. One way t
     var r_name = Regex('(?:"(?:[^"]*)")+');
     var k_hi = Keyword('hi');
     var START = Sequence(k_hi, r_name);
+    
+    // export grammar so we can use it in our application
     window.grammar = Grammar(START);      
 })(
     window.jsleri.Keyword,
