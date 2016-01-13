@@ -95,3 +95,21 @@ var START = jsleri.Sequence(
 
 grammar.parse('Tic Tac Toe').isValid  // => true
 ```
+
+Keyword
+-------
+syntax:
+```javascript
+Keyword(keyword, ign_case)
+```
+The parser needs to match the keyword which is just a string. When matching keywords we need to tell the parser what characters are allowed in keywords. By default Jsleri uses `^\w+` which is both in Python and JavaScript equals to `^[A-Za-z0-9_]+`. Keyword() accepts one more argument `ign_case` to tell the parser if we should match case insensitive.
+
+Example:
+
+```javascript
+
+var START = Keyword('tic-tac-toe', ign_case=true),
+    grammar = jsleri.Grammar(START, '[A-Za-z-]+');
+
+grammar.parse('Tic-Tac-Toe').isValid  // => true
+```
