@@ -37,9 +37,9 @@ In real word you would probably want to write a separate grammar file. One way t
             Grammar,
             Sequence
         ) {
-    var r_name = jsleri.Regex('(?:"(?:[^"]*)")+');
-    var k_hi = jsleri.Keyword('hi');
-    var START = jsleri.Sequence(k_hi, r_name);
+    var r_name = Regex('(?:"(?:[^"]*)")+');
+    var k_hi = Keyword('hi');
+    var START = Sequence(k_hi, r_name);
     window.grammar = Grammar(START);      
 })(
     window.jsleri.Keyword,
