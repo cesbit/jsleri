@@ -113,3 +113,32 @@ var START = jsleri.Keyword('tic-tac-toe', true),
 
 grammar.parse('Tic-Tac-Toe').isValid  // => true
 ```
+
+Repeat
+------
+syntax:
+```javascript
+Repeat(element, mi, ma)
+```
+The parser needs at least `mi` elements and at most `ma` elements. When `ma` is set to `undefined` we allow unlimited number of elements. `mi` can be any integer value equal of higher than 0 but not larger then `ma`. The default value for `mi` is 0 and `undefined` for `ma`
+
+Example:
+```javascript
+var START = jsleri.Repeat(jsleri.Keyword('ni')),
+    grammar = jsleri.Grammar(START);
+
+grammar.parse('ni ni ni ni ni').isValid  // => True
+```
+
+One should avoid to bind a name to the same element twice and Repeat(element, 1, 1) is a common solution to bind the element a second (or more) time(s). (Pyleri will raise a SyntaxError when trying to bind a second name).
+
+For example consider the following:
+```javascript
+var r_name = jsleri.Regex('(?:"(?:[^"]*)")+');
+
+// Do NOT do this
+var r_address = r_name; // WRONG
+    
+// Instead use Repeat
+var r_address = jsleri.Repeat(r_name, 1, 1);  // Correct
+```
