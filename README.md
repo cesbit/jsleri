@@ -157,3 +157,22 @@ var START = jsleri.List(jsleri.Keyword('ni')),
 
 grammar.parse('ni, ni, ni, ni, ni').isValid  // => True
 ```
+
+Optional
+--------
+syntax:
+```
+Optional(element)
+```
+The pasrser looks for an optional element. It is like using Repeat(element, 0, 1) but we encourage to use Optional since it is more readable. (and slightly faster)
+
+Example:
+```javascript
+var r_name = jsleri.Regex('(?:"(?:[^"]*)")+'),
+    k_hi = jsleri.Keyword('hi'),
+    START = jsleri.Sequence(k_hi, jsleri.Optional(r_name)),
+    grammar = jsleri.Grammar(START);
+
+grammar.parse('hi "Iris"').isValid  // => True
+grammar.parse('hi').isValid  // => True
+```
