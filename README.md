@@ -100,9 +100,9 @@ Keyword
 -------
 syntax:
 ```javascript
-Keyword(keyword, ign_case)
+Keyword(keyword, ignCase)
 ```
-The parser needs to match the keyword which is just a string. When matching keywords we need to tell the parser what characters are allowed in keywords. By default Jsleri uses `^\w+` which is both in Python and JavaScript equals to `^[A-Za-z0-9_]+`. Keyword() accepts one more argument `ign_case` to tell the parser if we should match case insensitive.
+The parser needs to match the keyword which is just a string. When matching keywords we need to tell the parser what characters are allowed in keywords. By default Jsleri uses `^\w+` which is both in Python and JavaScript equals to `^[A-Za-z0-9_]+`. Keyword() accepts one more argument `ignCase` to tell the parser if we should match case insensitive.
 
 Example:
 
@@ -146,9 +146,9 @@ List
 ----
 syntax:
 ```javascript
-List(element, delimiter, min, max, opt)
+List(element, delimiter, mi, ma, opt)
 ```
-List is like Repeat but with a delimiter. A comma is used as default delimiter but any element is allowed. When a string is used as delimiter it will be converted to a Token element. min and max work excatly like with Repeat. Opt kan be set to set to `true` to allow the list to end with a delimiter. By default this is set to `false` which means the list has to end with an element.
+List is like Repeat but with a delimiter. A comma is used as default delimiter but any element is allowed. When a string is used as delimiter it will be converted to a Token element. mi and ma work excatly like with Repeat. Opt kan be set to set to `true` to allow the list to end with a delimiter. By default this is set to `false` which means the list has to end with an element.
 
 Example:
 ```javascript
@@ -161,7 +161,7 @@ grammar.parse('ni, ni, ni, ni, ni').isValid  // => True
 Optional
 --------
 syntax:
-```
+```javascript
 Optional(element)
 ```
 The pasrser looks for an optional element. It is like using Repeat(element, 0, 1) but we encourage to use Optional since it is more readable. (and slightly faster)
@@ -175,4 +175,33 @@ var r_name = jsleri.Regex('(?:"(?:[^"]*)")+'),
 
 grammar.parse('hi "Iris"').isValid  // => True
 grammar.parse('hi').isValid  // => True
+```
+
+Regex
+-----
+syntax:
+```javascript
+Regex(pattern, ignCase)
+```
+The parser compiles a regular expression. Argument ignCase is set to `false` by default but can be set to `true` if you want the regular expression to be case insensitive. Note that `ignore case` is the only `re` flag from pyleri which will be compiled and accepted by `jsleri`.
+
+See the Quick Usage example for how to use Regex.
+
+Token
+-----
+syntax:
+```javascript
+Token(token)
+```
+A token can be one or more characters and is usually used to match operators like +, -, // and so on. When we parse a string object where jsleri expects an element, it will automatically be converted to a Token() object.
+
+Example:
+```javascript
+var t_dash = jsleri.Token('-'),
+    // We could just write delimiter='-' because
+    // any string will be converted to Token()
+    START = jsleri.List(jsleri.Keyword('ni'), t_dash),
+    grammar = jsleri.Grammar(START);
+
+grammar.parse('ni-ni-ni-ni-ni').isValid  // => True
 ```
