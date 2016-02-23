@@ -223,3 +223,27 @@ var tks     = jsleri.Tokens('+ - !='),
 grammar.parse('ni + ni != ni - ni').isValid  // => True
 ```
 
+Prio
+----
+syntax:
+```javascript
+Prio(element, element, ...)
+```
+Choose the first match from the prio elements and allow THIS for recursive operations. With THIS we point to the Prio element. Probably the example below explains how Prio and THIS can be used.
+
+Example:
+```javascript
+var k_ni    = jsleri.Keyword('ni'),
+    k_or    = jsleri.Keyword('or'),
+    k_and   = jsleri.Keyword('and'),
+    START   = jsleri.Prio(
+        k_ni,
+        jsleri.Sequence('(', THIS, ')'),  
+        jsleri.Sequence(THIS, k_or, THIS),
+        jsleri.Sequence(THIS, k_and, THIS)
+    ),  
+    grammar = jsleri.Grammar(START);
+
+grammar.parse('(ni or ni) and (ni or ni)').isValid  // => True
+```
+
