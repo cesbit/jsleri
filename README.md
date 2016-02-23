@@ -107,7 +107,6 @@ The parser needs to match the keyword which is just a string. When matching keyw
 Example:
 
 ```javascript
-
 var START = jsleri.Keyword('tic-tac-toe', true),
     grammar = jsleri.Grammar(START, '[A-Za-z-]+');
 
@@ -141,4 +140,20 @@ var r_address = r_name; // WRONG
     
 // Instead use Repeat
 var r_address = jsleri.Repeat(r_name, 1, 1);  // Correct
+```
+
+List
+----
+syntax:
+```javascript
+List(element, delimiter, min, max, opt)
+```
+List is like Repeat but with a delimiter. A comma is used as default delimiter but any element is allowed. When a string is used as delimiter it will be converted to a Token element. min and max work excatly like with Repeat. Opt kan be set to set to `true` to allow the list to end with a delimiter. By default this is set to `false` which means the list has to end with an element.
+
+Example:
+```javascript
+var START = jsleri.List(jsleri.Keyword('ni')),
+    grammar = jsleri.Grammar(START);
+
+grammar.parse('ni, ni, ni, ni, ni').isValid  // => True
 ```
