@@ -67,10 +67,10 @@ The parser needs to choose between one of the given elements. The parser will tr
 
 Example: let us use `Choice` to modify the Quick usage example to allow the string 'bye "Iris"'
 ```javascript
-var r_name = jsleri.Regex('(?:"(?:[^"]*)")+'),
-    k_hi = jsleri.Keyword('hi'),
-    k_bye = jsleri.Keyword('bye'),
-    START = jsleri.Sequence(jsleri.Choice(k_hi, k_bye), r_name),
+var r_name  = jsleri.Regex('(?:"(?:[^"]*)")+'),
+    k_hi    = jsleri.Keyword('hi'),
+    k_bye   = jsleri.Keyword('bye'),
+    START   = jsleri.Sequence(jsleri.Choice(k_hi, k_bye), r_name),
     grammar = jsleri.Grammar(START);
 
 grammar.parse('hi "Iris"').isValid  // => true
@@ -107,7 +107,7 @@ The parser needs to match the keyword which is just a string. When matching keyw
 Example:
 
 ```javascript
-var START = jsleri.Keyword('tic-tac-toe', true),
+var START   = jsleri.Keyword('tic-tac-toe', true),
     grammar = jsleri.Grammar(START, '[A-Za-z-]+');
 
 grammar.parse('Tic-Tac-Toe').isValid  // => true
@@ -123,7 +123,7 @@ The parser needs at least `mi` elements and at most `ma` elements. When `ma` is 
 
 Example:
 ```javascript
-var START = jsleri.Repeat(jsleri.Keyword('ni')),
+var START   = jsleri.Repeat(jsleri.Keyword('ni')),
     grammar = jsleri.Grammar(START);
 
 grammar.parse('ni ni ni ni ni').isValid  // => True
@@ -152,7 +152,7 @@ List is like Repeat but with a delimiter. A comma is used as default delimiter b
 
 Example:
 ```javascript
-var START = jsleri.List(jsleri.Keyword('ni')),
+var START   = jsleri.List(jsleri.Keyword('ni')),
     grammar = jsleri.Grammar(START);
 
 grammar.parse('ni, ni, ni, ni, ni').isValid  // => True
@@ -168,9 +168,9 @@ The pasrser looks for an optional element. It is like using Repeat(element, 0, 1
 
 Example:
 ```javascript
-var r_name = jsleri.Regex('(?:"(?:[^"]*)")+'),
-    k_hi = jsleri.Keyword('hi'),
-    START = jsleri.Sequence(k_hi, jsleri.Optional(r_name)),
+var r_name  = jsleri.Regex('(?:"(?:[^"]*)")+'),
+    k_hi    = jsleri.Keyword('hi'),
+    START   = jsleri.Sequence(k_hi, jsleri.Optional(r_name)),
     grammar = jsleri.Grammar(START);
 
 grammar.parse('hi "Iris"').isValid  // => True
@@ -197,11 +197,29 @@ A token can be one or more characters and is usually used to match operators lik
 
 Example:
 ```javascript
-var t_dash = jsleri.Token('-'),
+var t_dash  = jsleri.Token('-'),
     // We could just write '-' instead of token t_dash 
     // because any string will be converted to Token()
-    START = jsleri.List(jsleri.Keyword('ni'), t_dash),
+    START   = jsleri.List(jsleri.Keyword('ni'), t_dash),
     grammar = jsleri.Grammar(START);
 
 grammar.parse('ni-ni-ni-ni-ni').isValid  // => True
 ```
+
+Tokens
+------
+syntax:
+```javascript
+Tokens(tokens)
+```
+Can be used to register multiple tokens at once. The tokens argument should be a string with tokens seperated by spaces. If given tokens are different in size the parser will try to match the longest tokens first.
+
+Example:
+```javascript
+var tks     = jsleri.Tokens('+ - !='),
+    START   = jsleri.List(jsleri.Keyword('ni'), tks),
+    grammar = jsleri.Grammar(START);
+
+grammar.parse('ni + ni != ni - ni').isValid  // => True
+```
+
