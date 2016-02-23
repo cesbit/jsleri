@@ -198,8 +198,8 @@ A token can be one or more characters and is usually used to match operators lik
 Example:
 ```javascript
 var t_dash = jsleri.Token('-'),
-    // We could just write delimiter='-' because
-    // any string will be converted to Token()
+    // We could just write '-' instead of token t_dash 
+    // because any string will be converted to Token()
     START = jsleri.List(jsleri.Keyword('ni'), t_dash),
     grammar = jsleri.Grammar(START);
 
