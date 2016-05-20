@@ -140,12 +140,17 @@ a reference to any element can be made.
 
 Example:
 ```javascript
-var START = Ref(Sequence),
-    ni_item = Choice(Keyword('ni'), START),
-    ni_seq = Sequence('[', List(ni_item), ']');
-Object.assign(START, ni_seq);
-var grammar = jsleri.Grammar(START);
+// make a forward reference START to a Sequence.
+var START = jsleri.Ref(jsleri.Sequence);
 
+// we can now use START
+var ni_item = jsleri.Choice(jsleri.Keyword('ni'), START);
+
+// here we actually create START
+Object.assign(START, jsleri.Sequence('[', jsleri.List(ni_item), ']'));
+
+// create and test the grammar
+var grammar = jsleri.Grammar(START);
 grammar.parse('[ni, ni, [ni, [], [ni, ni]]]').isValid  // => True
 ```
 

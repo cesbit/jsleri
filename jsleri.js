@@ -329,7 +329,8 @@
         if (obj) return obj;
 
         element = this.args[0];
-        delimiter = this.args[1];
+        delimiter = (this.args[1] === undefined) ? new Token(',') : this.args[1];
+
         _min = this.args[2];
         _max = this.args[3];
         opt = this.args[4];
@@ -427,7 +428,9 @@
      * Ref constructor
      **************************************************************************/
     function Ref (Cls) {
-        var obj = Jsleri.call(this, Cls, [Ref]);
+        var Construct = function () {};
+        Construct.prototype = Cls.prototype;
+        var obj = Jsleri.call(this, Construct, arguments);
         if (obj) return obj;
     }
     Ref.prototype = Object.create(Jsleri.prototype);
@@ -590,7 +593,6 @@
         this.optional = [];
         this.pos = 0;
         this._modes = [this.required];
-
     }
     Expecting.prototype.setModeRequired = function (pos, isRequired) {
         if (this._modes[pos] !== this.optional)
@@ -618,7 +620,6 @@
      * All 'other' objects inherit from Jsleri
      ***************************************************************************/
     function Jsleri (Cls, args) {
-        if (args[0] === Ref)
         args = Array.prototype.slice.call(args);
 
         if (!(this instanceof Cls))
