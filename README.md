@@ -129,6 +129,19 @@ var START   = jsleri.Repeat(jsleri.Keyword('ni')),
 grammar.parse('ni ni ni ni ni').isValid  // => True
 ```
 
+One should avoid to bind a name to the same element twice and Repeat(element, 1, 1) is a common solution to bind the element a second (or more) time(s).
+
+For example consider the following:
+```javascript
+var r_name = jsleri.Regex('(?:"(?:[^"]*)")+');
+
+// Do NOT do this
+var r_address = r_name; // WRONG
+
+// Instead use Repeat
+var r_address = jsleri.Repeat(r_name, 1, 1);  // Correct
+```
+
 Ref
 ---
 syntax:
@@ -152,19 +165,6 @@ Object.assign(START, jsleri.Sequence('[', jsleri.List(ni_item), ']'));
 // create and test the grammar
 var grammar = jsleri.Grammar(START);
 grammar.parse('[ni, ni, [ni, [], [ni, ni]]]').isValid  // => True
-```
-
-One should avoid to bind a name to the same element twice and Repeat(element, 1, 1) is a common solution to bind the element a second (or more) time(s). (Pyleri will raise a SyntaxError when trying to bind a second name).
-
-For example consider the following:
-```javascript
-var r_name = jsleri.Regex('(?:"(?:[^"]*)")+');
-
-// Do NOT do this
-var r_address = r_name; // WRONG
-
-// Instead use Repeat
-var r_address = jsleri.Repeat(r_name, 1, 1);  // Correct
 ```
 
 List
