@@ -1,5 +1,5 @@
 /*
- *  JS-Leri - JavaScript LR-Parsing Module $VERSION$
+ *  JS-Leri - JavaScript LR-Parsing Module 1.1.0
  *
  *  Another parser module which allows writing the language in plain JavaScript.
  *  This project was inspired by lrparsing (http://lrparsing.sourceforge.net/), a Python
@@ -427,7 +427,7 @@
      * Ref constructor
      **************************************************************************/
     function Ref (Cls) {
-        var obj = Jsleri.call(this, Cls, [Ref]);
+        var obj = Jsleri.call(this, Cls, arguments);
         if (obj) return obj;
     }
     Ref.prototype = Object.create(Jsleri.prototype);
@@ -618,7 +618,6 @@
      * All 'other' objects inherit from Jsleri
      ***************************************************************************/
     function Jsleri (Cls, args) {
-        if (args[0] === Ref)
         args = Array.prototype.slice.call(args);
 
         if (!(this instanceof Cls))

@@ -1,0 +1,14 @@
+<!-- Quick example Jsleri -->
+<script type="text/javascript" src="jsleri.js"></script>
+<script type="text/javascript">
+
+var r_name = jsleri.Regex('(?:"(?:[^"]*)")+')
+
+// Raises a SyntaxError because we try to bind a second time.
+var r_address = r_name // WRONG
+
+var grammar = jsleri.Grammar(r_address);
+
+alert(grammar.parse('ni ni ni ni n_').isValid)  // => True
+
+</script>
