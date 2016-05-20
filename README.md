@@ -10,7 +10,7 @@ write your grammar in Javascript too.
 Quick usage
 -----------
 ```html
-<!-- Quick usage Jsleri 
+<!-- Quick usage Jsleri
 Note: we skip importing jsleri in future examples. -->
 <script type="text/javascript" src="jsleri.js"></script>
 <script type="text/javascript">
@@ -40,9 +40,9 @@ In real word you would probably want to write a separate grammar file. One way t
     var r_name = Regex('(?:"(?:[^"]*)")+');
     var k_hi = Keyword('hi');
     var START = Sequence(k_hi, r_name);
-    
+
     // export grammar so we can use it in our application
-    window.grammar = Grammar(START);      
+    window.grammar = Grammar(START);
 })(
     window.jsleri.Keyword,
     window.jsleri.Regex,
@@ -74,7 +74,7 @@ var r_name  = jsleri.Regex('(?:"(?:[^"]*)")+'),
     grammar = jsleri.Grammar(START);
 
 grammar.parse('hi "Iris"').isValid  // => true
-grammar.parse('bye "Iris"').isValid  // => true    
+grammar.parse('bye "Iris"').isValid  // => true
 ```
 
 Sequence
@@ -88,8 +88,8 @@ The parser needs to match each element in a sequence.
 Example:
 ```javascript
 var START = jsleri.Sequence(
-        jsleri.Keyword('Tic'), 
-        jsleri.Keyword('Tac'), 
+        jsleri.Keyword('Tic'),
+        jsleri.Keyword('Tac'),
         jsleri.Keyword('Toe')),
     grammar = jsleri.Grammar(START);
 
@@ -129,6 +129,26 @@ var START   = jsleri.Repeat(jsleri.Keyword('ni')),
 grammar.parse('ni ni ni ni ni').isValid  // => True
 ```
 
+Ref
+---
+syntax:
+```javascript
+Ref(Constructor)
+```
+The grammar can make a forward reference to make recursion possible. In the example below we create a forward reference to START but note that
+a reference to any element can be made.
+
+Example:
+```javascript
+var START = Ref(Sequence),
+    ni_item = Choice(Keyword('ni'), START),
+    ni_seq = Sequence('[', List(ni_item), ']');
+Object.assign(START, ni_seq);
+var grammar = jsleri.Grammar(START);
+
+grammar.parse('[ni, ni, [ni, [], [ni, ni]]]').isValid  // => True
+```
+
 One should avoid to bind a name to the same element twice and Repeat(element, 1, 1) is a common solution to bind the element a second (or more) time(s). (Pyleri will raise a SyntaxError when trying to bind a second name).
 
 For example consider the following:
@@ -137,7 +157,7 @@ var r_name = jsleri.Regex('(?:"(?:[^"]*)")+');
 
 // Do NOT do this
 var r_address = r_name; // WRONG
-    
+
 // Instead use Repeat
 var r_address = jsleri.Repeat(r_name, 1, 1);  // Correct
 ```
@@ -198,7 +218,7 @@ A token can be one or more characters and is usually used to match operators lik
 Example:
 ```javascript
 var t_dash  = jsleri.Token('-'),
-    // We could just write '-' instead of token t_dash 
+    // We could just write '-' instead of token t_dash
     // because any string will be converted to Token()
     START   = jsleri.List(jsleri.Keyword('ni'), t_dash),
     grammar = jsleri.Grammar(START);
@@ -238,10 +258,10 @@ var k_ni    = jsleri.Keyword('ni'),
     k_and   = jsleri.Keyword('and'),
     START   = jsleri.Prio(
         k_ni,
-        jsleri.Sequence('(', THIS, ')'),  
+        jsleri.Sequence('(', THIS, ')'),
         jsleri.Sequence(THIS, k_or, THIS),
         jsleri.Sequence(THIS, k_and, THIS)
-    ),  
+    ),
     grammar = jsleri.Grammar(START);
 
 grammar.parse('(ni or ni) and (ni or ni)').isValid  // => True
