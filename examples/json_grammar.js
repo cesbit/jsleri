@@ -1,12 +1,4 @@
-/* jshint newcap: false */
-
-/*
- * This grammar is generated using the Grammar.export_js() method and
- * should be used with the jsleri JavaScript module.
- *
- * Source class: JsonGrammar
- * Created at: 2016-05-20 10:51:17
- */
+/* JSON Grammar */
 
 'use strict';
 
@@ -65,10 +57,3 @@
     window.jsleri.Ref,
     window.jsleri.Grammar
 );
-
-
-
-(function (Grammar) {
-    window.console.log(Grammar.parse('{"hoi \\"Iris\\"": 0.5}'));
-
-})(window.JsonGrammar);
