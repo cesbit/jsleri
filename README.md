@@ -4,7 +4,7 @@ Javascript Left-Right Parser
 Related projects
 ----------------
 - [pyleri](https://github.com/transceptor-technology/pyleri): Python parser (can export grammar to pyleri, cleri and jsleri)
-- [cleri](https://github.com/transceptor-technology/cleri): C parser
+- [libcleri](https://github.com/transceptor-technology/libcleri): C parser
 - [goleri](https://github.com/transceptor-technology/goleri): Go parser
 
 Why Jsleri?
