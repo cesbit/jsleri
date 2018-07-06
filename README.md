@@ -68,7 +68,7 @@ For example:
 
 ## Quick usage
 ```javascript
-import { Regex, Keyword, Sequence, Grammar } from 'jleri';
+import { Regex, Keyword, Sequence, Grammar } from 'jsleri';
 
 // create your grammar
 class MyGrammar extends Grammar {
