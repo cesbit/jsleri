@@ -427,9 +427,11 @@ var refSet = function (element) {
 function Ref (Cls) {
     var Construct = function () {};
     Construct.prototype = Cls.prototype;
-    Construct.prototype.set = refSet;
     var obj = Jsleri.call(this, Construct, arguments);
-    if (obj) return obj;
+    if (obj) {
+        obj.set = refSet;
+        return obj;
+    }
 }
 Ref.prototype = Object.create(Jsleri.prototype);
 Ref.prototype.constructor = Ref;
