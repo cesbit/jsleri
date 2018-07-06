@@ -1,91 +1,94 @@
-Javascript Left-Right Parser
-============================
+# Javascript Left-Right Parser
+Jsleri is an easy-to-use language parser for JavaScript.
 
-Related projects
-----------------
+---------------------------------------
+  * [Installation](#installation)
+  * [Quick usage](#quick-usage)
+  * [Elements](#elements)
+    * [Keyword](#keyword)
+    * [Regex](#regex)
+    * [Token](#token)
+    * [Tokens](#tokens)
+    * [Sequence](#sequence)
+    * [Choice](#choice)
+    * [Repeat](#repeat)
+    * [List](#list)
+    * [Optional](#optional)
+    * [Ref](#ref)
+    * [Prio](#prio)
+
+---------------------------------------
+
+## Installation
+Using npm:
+
+```
+$ npm i jsleri
+```
+
+In your project:
+
+```javascript
+import * as jsleri from 'jsleri';
+// Exposes:
+// - jsleri.version
+// - jsleri.noop
+// - jsleri.Keyword
+// - jsleri.Regex
+// - jsleri.Token
+// - jsleri.Tokens
+// - jsleri.Sequence
+// - jsleri.Choice
+// - jsleri.Repeat
+// - jsleri.List
+// - jsleri.Optional
+// - jsleri.Ref
+// - jsleri.Prio
+// - jsleri.THIS
+// - jsleri.Grammar
+// - jsleri.EOS
+
+```
+
+Or... download the latest release from [here](#https://github.com/transceptor-technology/jsleri/releases/latest) and load the file in inside your project.
+For example:
+```html
+<!-- Add this line to the <head> section to expose window.jsleri -->
+<script type="text/javascript" src="jsleri-1.1.3.min.js"></script>
+
+```
+
+## Related projects
 - [pyleri](https://github.com/transceptor-technology/pyleri): Python parser (can export grammar to pyleri, cleri and jsleri)
 - [libcleri](https://github.com/transceptor-technology/libcleri): C parser
 - [goleri](https://github.com/transceptor-technology/goleri): Go parser
-
-Why Jsleri?
------------
-Jsleri is an easy-to-use parser created for SiriDB. We first used [lrparsing](http://lrparsing.sourceforge.net/doc/html/) and wrote [jsleri](https://github.com/transceptor-technology/jsleri) for auto-completion and suggestions in our web console. Later we found small issues in lrparsing and also had difficulties keeping the language the same in both projects. That is when we decided to create both Jsleri and Pyleri where Pyleri can export it's grammar to JavaScript. Ofcourse you still can
-write your grammar in Javascript too.
+- [jleri](https://github.com/transceptor-technology/jleri): Java parser
 
 
-Quick usage
------------
-```html
-<!-- Quick usage Jsleri
-Note: we skip importing jsleri in future examples. -->
-<script type="text/javascript" src="jsleri.js"></script>
-<script type="text/javascript">
-
-var r_name = jsleri.Regex('(?:"(?:[^"]*)")+'),
-    k_hi = jsleri.Keyword('hi'),
-    START = jsleri.Sequence(k_hi, r_name),
-    grammar = jsleri.Grammar(START);
-
-alert(grammar.parse('hi "Iris"').isValid);  // alerts true
-alert(grammar.parse('hello "Iris"').isValid);  // alerts false
-
-</script>
-```
-
-Real world example
-------------------
-In real word you would probably want to write a separate grammar file. One way to this is shown here...
+## Quick usage
 ```javascript
-// grammar.js
-(function (
-            Keyword,
-            Regex,
-            Grammar,
-            Sequence
-        ) {
-    var r_name = Regex('(?:"(?:[^"]*)")+');
-    var k_hi = Keyword('hi');
-    var START = Sequence(k_hi, r_name);
+import { Regex, Keyword, Sequence, Grammar } from 'jleri';
 
-    // export grammar so we can use it in our application
-    window.grammar = Grammar(START);
-})(
-    window.jsleri.Keyword,
-    window.jsleri.Regex,
-    window.jsleri.Grammar,
-    window.jsleri.Sequence
-);
+// create your grammar
+class MyGrammar extends Grammar {
+    static START = Sequence(
+        Keyword('hi'),
+        Regex('(?:"(?:[^"]*)")+')
+    );
+}
+
+// create a instance of your grammar
+const myGrammar = new MyGrammar();
+
+// do something with the grammar
+alert(myGrammar.parse('hi "Iris"').isValid);  // alerts true
+alert(myGrammar.parse('hello "Iris"').isValid);  // alerts false
 ```
 
-```html
-<!-- your html file -->
-<script type="text/javascript" src="jsleri.js"></script>
-<script type="text/javascript" src="grammar.js"></script>
-```
+## Elements
+Jsleri has several Elements which can be used to create a grammar.
 
-Choice
-------
-syntax:
-```javascript
-Choice(element, element, ...)
-```
-The parser needs to choose between one of the given elements. The parser will try each element and returns the longest match.
-
-Example: let us use `Choice` to modify the Quick usage example to allow the string 'bye "Iris"'
-```javascript
-var r_name  = jsleri.Regex('(?:"(?:[^"]*)")+'),
-    k_hi    = jsleri.Keyword('hi'),
-    k_bye   = jsleri.Keyword('bye'),
-    START   = jsleri.Sequence(jsleri.Choice(k_hi, k_bye), r_name),
-    grammar = jsleri.Grammar(START);
-
-grammar.parse('hi "Iris"').isValid  // => true
-grammar.parse('bye "Iris"').isValid  // => true
-```
-
-Sequence
---------
-syntax:
+### Sequence
 ```javascript
 Sequence(element, element, ...)
 ```
@@ -93,13 +96,12 @@ The parser needs to match each element in a sequence.
 
 Example:
 ```javascript
-var START = jsleri.Sequence(
-        jsleri.Keyword('Tic'),
-        jsleri.Keyword('Tac'),
-        jsleri.Keyword('Toe')),
-    grammar = jsleri.Grammar(START);
-
-grammar.parse('Tic Tac Toe').isValid  // => true
+grammar = Grammar(Sequence(
+    Keyword('Tic'),
+    Keyword('Tac'),
+    Keyword('Toe')
+));
+console.log(grammar.parse('Tic Tac Toe').isValid);  // true
 ```
 
 Keyword
@@ -125,7 +127,7 @@ syntax:
 ```javascript
 Repeat(element, mi, ma)
 ```
-The parser needs at least `mi` elements and at most `ma` elements. When `ma` is set to `undefined` we allow unlimited number of elements. `mi` can be any integer value equal of higher than 0 but not larger then `ma`. The default value for `mi` is 0 and `undefined` for `ma`
+The parser needs at least `mi` elements and at most `ma` elements. When `ma` is set to `undefined` we allow unlimited number of elements. `mi` can be any integer value equal or higher than 0 but not larger then `ma`. The default value for `mi` is 0 and `undefined` for `ma`
 
 Example:
 ```javascript

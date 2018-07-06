@@ -1,0 +1,44 @@
+{
+  "name": "jsleri",
+  "version": "1.1.3",
+  "description": "A JavaScript Left-right parser",
+  "main": "dist/jsleri.js",
+  "scripts": {
+    "test": "mocha --require babel-core/register",
+    "build:dev": "webpack -d --progress --profile --colors",
+    "build:prod": "NODE_ENV='production' webpack -p --progress --profile --colors",
+    "deploy:dev": "NODE_TARGET='window' webpack -d --progress --profile --colors",
+    "deploy:prod": "NODE_ENV='production' NODE_TARGET='window' webpack -p --progress --profile --colors"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/transceptor-technology/jsleri.git"
+  },
+  "keywords": [
+    "Language",
+    "Parser",
+    "Grammar"
+  ],
+  "author": "Jeroen van der Heijden",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/transceptor-technology/jsleri/issues"
+  },
+  "homepage": "https://github.com/transceptor-technology/jsleri#readme",
+  "dependencies": {},
+  "devDependencies": {
+    "babel-core": "^6.26.3",
+    "babel-eslint": "^8.2.3",
+    "babel-loader": "^7.1.4",
+    "babel-plugin-transform-class-properties": "^6.24.1",
+    "babel-plugin-syntax-dynamic-import": "^6.18.0",
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-env": "^1.7.0",
+    "eslint": "^4.19.1",
+    "eslint-plugin-react": "^7.9.1",
+    "mocha": "^5.2.0",
+    "uglifyjs-webpack-plugin": "^1.2.5",
+    "webpack": "^4.11.0",
+    "webpack-cli": "^3.0.2"
+  }
+}

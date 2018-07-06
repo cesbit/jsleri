@@ -1,74 +1,123 @@
-/* jshint newcap: false */
+import assert from 'assert';
+import {
+    version,
+    noop,
+    Keyword,
+    Regex,
+    Token,
+    Tokens,
+    Sequence,
+    Choice,
+    Repeat,
+    List,
+    Optional,
+    Ref,
+    Prio,
+    THIS,
+    Grammar,
+    EOS
+} from './jsleri';
 
-/*
- * This grammar is generated using the Grammar.export_js() method and
- * should be used with the jsleri JavaScript module.
- *
- * Source class: JsonGrammar
- * Created at: 2016-05-20 10:51:17
- */
 
-'use strict';
+class JsonGrammar extends Grammar {
 
-(function (
-            List,
-            Token,
-            Regex,
-            Keyword,
-            Sequence,
-            Choice,
-            Ref,
-            Grammar
-        ) {
-    var START = Ref(Choice);
-    var r_string = Regex('^(")(?:(?=(\\\\?))\\2.)*?\\1');
-    var r_float = Regex('^-?[0-9]+\\.?[0-9]+');
-    var r_integer = Regex('^-?[0-9]+');
-    var k_true = Keyword('true');
-    var k_false = Keyword('false');
-    var k_null = Keyword('null');
-    var json_map_item = Sequence(
-        r_string,
+    static START = Ref(Choice);
+    static r_string = Regex('^(")(?:(?=(\\\\?))\\2.)*?\\1');
+    static r_float = Regex('^-?[0-9]+\\.?[0-9]+');
+    static r_integer = Regex('^-?[0-9]+');
+    static k_true = Keyword('true');
+    static k_false = Keyword('false');
+    static k_null = Keyword('null');
+    static json_map_item = Sequence(
+        JsonGrammar.r_string,
         Token(':'),
-        START
+        JsonGrammar.START
     );
-    var json_map = Sequence(
+    static json_map = Sequence(
         Token('{'),
-        List(json_map_item, Token(','), 0, undefined, false),
+        List(JsonGrammar.json_map_item, Token(','), 0, undefined, false),
         Token('}')
     );
-    var json_array = Sequence(
+    static json_array = Sequence(
         Token('['),
-        List(START, Token(','), 0, undefined, false),
+        List(JsonGrammar.START, Token(','), 0, undefined, false),
         Token(']')
     );
-    Object.assign(START, Choice(
-        r_string,
-        r_float,
-        r_integer,
-        k_true,
-        k_false,
-        k_null,
-        json_map,
-        json_array
-    ));
 
-    window.JsonGrammar = Grammar(START, '^\\w+');
+    constructor() {
+        super();
+        JsonGrammar.START.set(Choice(
+            JsonGrammar.r_string,
+            JsonGrammar.r_float,
+            JsonGrammar.r_integer,
+            JsonGrammar.k_true,
+            JsonGrammar.k_false,
+            JsonGrammar.k_null,
+            JsonGrammar.json_map,
+            JsonGrammar.json_array
+        ));
+    }
+}
 
-})(
-    window.jsleri.List,
-    window.jsleri.Token,
-    window.jsleri.Regex,
-    window.jsleri.Keyword,
-    window.jsleri.Sequence,
-    window.jsleri.Choice,
-    window.jsleri.Ref,
-    window.jsleri.Grammar
-);
+describe('Test version string', () => {
 
+    it('should return a version string', () => {
+        assert.equal(typeof version, 'string');
+        // Only test when using import from ./dist/jsleri
+        // assert.equal(version, '1.1.3');
+    });
 
+});
 
-(function (Grammar) {
-    window.console.log(Grammar.parse('{"hoi \\"Iris\\"": 0.5}'));
+describe('Test Keyword', () => {
 
-})(window.JsonGrammar);
+    it('should parse a Keyword Element as expected', () => {
+        let hi = Keyword('hi');
+        let grammar = Grammar(hi);
+
+        // assert statements
+        assert.equal(false, hi.ignCase);
+        assert.equal(true, grammar.parse('hi').isValid);
+        assert.equal(true, grammar.parse(' hi ').isValid);
+        assert.equal(false, grammar.parse('Hi').isValid);
+        assert.equal(false, grammar.parse('hello').isValid);
+        assert.deepEqual([], grammar.parse('hi').expecting);
+        assert.deepEqual([hi], grammar.parse('').expecting);
+        assert.deepEqual([EOS], grammar.parse('hi!').expecting);
+    });
+
+});
+
+describe('Test Keyword Ignore Case', () => {
+
+    it('should parse a Keyword (ignCase) Element as expected', () => {
+        let hi = Keyword('hi', true);
+        let grammar = Grammar(hi);
+
+        // assert statements
+        assert.equal(true, hi.ignCase);
+        assert.equal(true, grammar.parse('hi').isValid);
+        assert.equal(true, grammar.parse('Hi').isValid);
+        assert.equal(false, grammar.parse('').isValid);
+    });
+
+});
+
+describe('Test JsonGrammar', () => {
+
+    it('should successfully initialize JsonGrammar', () => {
+        let jsonGrammar = new JsonGrammar();
+        assert.equal(typeof jsonGrammar.parse, 'function');
+    });
+
+    it('should parse json', () => {
+        let jsonGrammar = new JsonGrammar();
+        assert.equal(true, jsonGrammar.parse('{"json": [1, 2, 3]}').isValid);
+    });
+
+    it('should parse invalid json', () => {
+        let jsonGrammar = new JsonGrammar();
+        assert.equal(false, jsonGrammar.parse('{"json": [1, 2, 3]').isValid);
+    });
+
+});

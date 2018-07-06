@@ -1,14 +1,12 @@
 <!-- Quick example Jsleri -->
-<script type="text/javascript" src="jsleri.js"></script>
+<script type="text/javascript" src="dist/jsleri-1.1.3.js"></script>
 <script type="text/javascript">
 
-var r_name = jsleri.Regex('(?:"(?:[^"]*)")+')
+var hi = jsleri.Keyword('hi');
+var bye = jsleri.Keyword('bye');
 
-// Raises a SyntaxError because we try to bind a second time.
-var r_address = r_name // WRONG
+var grammar = jsleri.Grammar(jsleri.Sequence(hi, bye));
 
-var grammar = jsleri.Grammar(r_address);
-
-alert(grammar.parse('ni ni ni ni n_').isValid)  // => True
+alert(grammar.parse('hi bye').isValid)  // => True
 
 </script>
