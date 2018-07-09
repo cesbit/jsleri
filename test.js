@@ -20,7 +20,6 @@ import {
 
 
 class JsonGrammar extends Grammar {
-
     static START = Ref(Choice);
     static r_string = Regex('^(")(?:(?=(\\\\?))\\2.)*?\\1');
     static r_float = Regex('^-?[0-9]+\\.?[0-9]+');
@@ -43,9 +42,8 @@ class JsonGrammar extends Grammar {
         List(JsonGrammar.START, Token(','), 0, undefined, false),
         Token(']')
     );
-
     constructor() {
-        super();
+        super(JsonGrammar.START, '^\\w+');
         JsonGrammar.START.set(Choice(
             JsonGrammar.r_string,
             JsonGrammar.r_float,

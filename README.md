@@ -204,9 +204,6 @@ The parser looks for an optional element. It is like using `Repeat(element, 0, 1
 
 Example:
 ```javascript
-var r_name  = jsleri.,
-    k_hi    = jsleri.,
-    START   = jsleri.,
 const grammar = new Grammar(Sequence(
     Keyword('hi'),
     Optional(Regex('(?:"(?:[^"]*)")+'))
