@@ -56,7 +56,6 @@ For example:
 ```html
 <!-- Add this line to the <head> section to expose window.jsleri -->
 <script src="jsleri-1.1.3.min.js"></script>
-
 ```
 
 ## Related projects
