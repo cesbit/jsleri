@@ -51,7 +51,7 @@ import * as jsleri from 'jsleri';
 
 ```
 
-Or... download the latest release from [here](#https://github.com/transceptor-technology/jsleri/releases/latest) and load the file in inside your project.
+Or... download the latest release from [here](https://github.com/transceptor-technology/jsleri/releases/latest) and load the file in inside your project.
 For example:
 ```html
 <!-- Add this line to the <head> section to expose window.jsleri -->
