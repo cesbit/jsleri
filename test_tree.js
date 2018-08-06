@@ -31,7 +31,7 @@ function nodeProps(node, children)
         'start': node.start,
         'end': node.end,
         //'name': node.element.name,
-        'elemnt': node.element.constructor.name,
+        'element': node.element.constructor.name,
         'string': node.str,
         'children': children
     }
@@ -53,12 +53,6 @@ function ViewParseTree(res)
 }
 
 var res = window.MyGrammar.parse('hi "pyleri" bye "pyleri"');
-//document.write(res.isValid, '\n', res.pos);
-var tree = (res.tree.children[0] ? res.tree.children[0] : res.tree);
-console.log(tree);
-
-
-console.log(ViewParseTree(res));
 var json = ViewParseTree(res);
 var html = JSON.stringify(json, null, '   ').replace(/\\"/g, '"');
 document.getElementById('json').innerHTML = html;
