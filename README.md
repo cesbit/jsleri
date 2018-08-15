@@ -121,7 +121,6 @@ Let us take the example from Quick usage.
 alert(myGrammar.parse('hello "Iris"').isValid);  // alerts false
 ```
 
-
 ### Position
 `pos` returns the position where the parser had to stop. (when `isValid` is `True` this value will be equal to the length of the given string with `str.rstrip()` applied)
 
@@ -272,13 +271,13 @@ A node contains 5 properties that will be explained next:
 
 - `start` property returns the start of the node object.
 - `end` property returns the end of the  node object.
-- `element` returns the type of [Element](#elements) (e.g. Repeat, Sequence, Keyword, etc.). An element can be assigned to a variable; for instance in the example above `Keyword('hi')` was assigned to `k_hi`.
+- `element` returns the type of [Element](#elements) (e.g. Repeat, Sequence, Keyword, etc.).
 - `string` returns the string that is parsed.
 - `children` can return a node object containing deeper layered nodes provided that there are any. In our example the root node has an element type `Repeat()`, starts at 0 and ends at 24, and it has two `children`. These children are node objects that have both an element type `Sequence`, start at 0 and 12 respectively, and so on.
 
 
 ### Expecting
-`expecting` returns an array containing elements which jsleri expects at `pos`. Even if `isValid` is true there might be elements in this object, for example when an `Optional()` element could be added to the string. Expecting is useful if you want to implement things like auto-completion, syntax error handling, auto-syntax-correction etc. The following example will illustrate a way of implementation. When you click on the following link ([https://siridb.net/test-expecting](https://siridb.net/test-expecting)), you will get redirected to the SiriDB webpage. SiriDB is an open source time series database with its own grammar class. You will see that `expecting` is used to help you create a valid query string. Start writing something, click one of the options that appear and see what happens.
+`expecting` returns an array containing elements which jsleri expects at `pos`. Even if `isValid` is true there might be elements in this object, for example when an `Optional()` element could be added to the string. Expecting is useful if you want to implement things like auto-completion, syntax error handling, auto-syntax-correction etc. The following example will illustrate a way of implementation. When you click on the following link ([https://siridb.net/test-expecting](https://siridb.net/test-expecting)), you will get redirected to the SiriDB webpage. SiriDB is an open source time series database with its own grammar class. You will see that `expecting` is used to help you create a valid query string for SiriDB. Start writing something, click one of the options that appear and see what happens.
 
 Example script:
 ```javascript
