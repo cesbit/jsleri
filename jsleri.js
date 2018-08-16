@@ -539,7 +539,7 @@ function Tokens (tokens) {
     if (typeof tokens !== 'string')
         throw '(Jsleri-->Tokens) first argument must be a string; got ' + typeof tokens;
 
-    this.tokens = tokens.split(RE_WHITESPACE).sort(sortOnStrLen);
+    this.tokens = tokens.trim().split(RE_WHITESPACE).sort(sortOnStrLen);
 }
 Tokens.prototype = Object.create(Jsleri.prototype);
 Tokens.prototype.constructor = Tokens;
