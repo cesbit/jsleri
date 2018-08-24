@@ -130,7 +130,7 @@ alert(myGrammar.parse('hello "Iris"').pos);  // alerts 0
 ```
 
 ### Tree
-`tree` contains the parse tree. Even when `isValid` is `False` the parse tree is returned but will only contain results as far as parsing has succeeded. The tree is the root node which can include several `children` nodes. The structure will be further clarified in the test_tree.js found in the "example" folder. It explains a way of visualizing the parse tree.
+`tree` contains the parse tree. Even when `isValid` is `False` the parse tree is returned but will only contain results as far as parsing has succeeded. The tree is the root node which can include several `children` nodes. The structure will be further clarified in the example found in the "example" folder. It explains a way of visualizing the parse tree.
 
 The nodes in the example contain 5 properties:
 
