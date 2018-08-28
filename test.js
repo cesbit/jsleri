@@ -74,6 +74,7 @@ describe('Test Keyword', () => {
         let grammar = Grammar(hi);
 
         // assert statements
+        assert.equal(Keyword, hi.constructor);
         assert.equal(false, hi.ignCase);
         assert.equal(true, grammar.parse('hi').isValid);
         assert.equal(true, grammar.parse(' hi ').isValid);
@@ -106,6 +107,7 @@ describe('Test Sequence', () => {
         let grammar = Grammar(seq);
 
         // assert statements
+        assert.equal(Sequence, seq.constructor);
         assert.equal(true, grammar.parse('hi iris').isValid);
         assert.equal(false, grammar.parse('hi sasha').isValid);
     });
@@ -122,6 +124,7 @@ describe('Test Choice', () => {
         let grammar = Grammar(choice);
 
         // assert statements
+        assert.equal(Choice, choice.constructor);
         assert.equal(true, grammar.parse('hi').isValid);
         assert.equal(true, grammar.parse('hi iris').isValid);
         assert.equal(false, grammar.parse('hi sasha').isValid);
@@ -137,6 +140,7 @@ describe('Test Optional', () => {
         let grammar = Grammar(optional);
 
         // assert statements
+        assert.equal(Optional, optional.constructor);
         assert.equal(true, grammar.parse('hi').isValid);
         assert.equal(true, grammar.parse('').isValid);
         assert.equal(false, grammar.parse('hello').isValid);
@@ -153,6 +157,7 @@ describe('Test Token', () => {
         let grammar = Grammar(dot);
 
         // assert statements
+        assert.equal(Token, dot.constructor);
         assert.equal(true, grammar.parse('.').isValid);
         assert.equal(false, grammar.parse('..').isValid);
         assert.equal(false, grammar.parse('').isValid);
@@ -177,6 +182,7 @@ describe('Test List', () => {
         let grammar = Grammar(list);
 
         // assert statements
+        assert.equal(List, list.constructor);
         assert.equal(0, list.min);
         assert.equal(null, list.max);
         assert.equal(false, list.opt);
@@ -213,6 +219,7 @@ describe('Test Repeat', () => {
         let grammar = Grammar(repeat);
 
         // assert statements
+        assert.equal(Repeat, repeat.constructor);
         assert.equal(0, repeat.min);
         assert.equal(null, repeat.max);
         assert.equal(true, grammar.parse('hi hi hi').isValid);
@@ -245,6 +252,7 @@ describe('Test Tokens', () => {
         let grammar = Grammar(tokens);
 
         // assert statements
+        assert.equal(Tokens, tokens.constructor);
         assert.equal(true, grammar.parse('==').isValid);
         assert.equal(true, grammar.parse('<=').isValid);
         assert.equal(true, grammar.parse('>').isValid);
@@ -263,6 +271,7 @@ describe('Test Regex', () => {
         let grammar = Grammar(regex);
 
         // assert statements
+        assert.equal(Regex, regex.constructor);
         assert.equal(true, grammar.parse('/hi/').isValid);
         assert.equal(true, grammar.parse('/hi/i').isValid);
         assert.equal(true, grammar.parse('  //i ').isValid);
@@ -285,6 +294,7 @@ describe('Test Ref', () => {
         ref.set(hi);
 
         // assert statements
+        assert.equal(Keyword, ref.constructor);
         assert.equal(true, grammar.parse('hi').isValid);
         assert.equal(false, grammar.parse('').isValid);
     });
@@ -304,6 +314,7 @@ describe('Test Prio', () => {
         let grammar = Grammar(prio);
 
         // assert statements
+        assert.equal(Prio, prio.element.constructor);
         assert.equal(true, grammar.parse('hi').isValid);
         assert.equal(true, grammar.parse('(bye)').isValid);
         assert.equal(true, grammar.parse('(hi and bye)').isValid);

@@ -298,7 +298,7 @@ function Choice () {
     this.elements = this.checkElements(this.args);
 }
 Choice.prototype = Object.create(Jsleri.prototype);
-Choice.prototype.constzructor = Choice;
+Choice.prototype.constructor = Choice;
 
 /**************************************************************************
  * Keyword constructor
