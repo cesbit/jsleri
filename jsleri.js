@@ -388,7 +388,7 @@ function Regex (re, ignCase) {
     ignCase = this.args[1];
 
     this.re = re;
-    this._re = new RegExp('^' + re, Boolean(ignCase) ? 'i' : undefined);
+    this._re = new RegExp('^' + re, ignCase ? 'i' : undefined);
 }
 Regex.prototype = Object.create(Jsleri.prototype);
 Regex.prototype.constructor = Regex;
@@ -421,8 +421,7 @@ var refSet = function (element) {
     if (!(element instanceof Jsleri))
         throw '(Jsleri-->Ref-->set) first argument must be an instance of Jsleri; got ' + typeof element;
     Object.assign(this, element);
-}
-
+};
 
 function Ref (Cls) {
     var Construct = function () {};

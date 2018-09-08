@@ -1,9 +1,10 @@
 {
     "presets": [
-        "env"
+        "@babel/preset-env"
     ],
     "plugins": [
-        "syntax-dynamic-import",
-        "transform-class-properties"
+        "@babel/plugin-proposal-class-properties",
+        "@babel/plugin-transform-object-assign",
+        "@babel/plugin-transform-runtime"
     ]
 }

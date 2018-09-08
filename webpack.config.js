@@ -1,14 +1,12 @@
-/* global require, __dirname, module */
+/* global require, __dirname, module, process */
 const path = require('path');
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 const webpack = require('webpack');
 const VERSION = require(path.resolve(__dirname, './package.json')).version;
 
-const filename = process.env.NODE_TARGET === 'window'
-    ? process.env.NODE_ENV === 'production'
-        ? `jsleri-${VERSION}.min.js`
-        : `jsleri-${VERSION}.js`
-    : 'jsleri.js'
+const filename = process.env.NODE_ENV === 'production'
+    ? `jsleri-${VERSION}.min.js`
+    : `jsleri-${VERSION}.js`;
 
 const config = {
     mode: 'production',
@@ -17,7 +15,7 @@ const config = {
         filename,
         path: path.resolve(__dirname, './dist'),
         library: 'jsleri',
-        libraryTarget: process.env.NODE_TARGET || 'commonjs2'
+        libraryTarget: 'umd'
     },
     module: {
         rules: [{
