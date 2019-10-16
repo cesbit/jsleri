@@ -445,7 +445,23 @@ function Grammar (element, reKeywords) {
     element = this.args[0];
     reKeywords = this.args[1];
 
-    element = (element === undefined) ? this.constructor.START : element;
+    var grammar = null;
+
+    if (element === undefined) {
+        element = this.constructor.START;
+        grammar = this.constructor;
+    } else if (element.START) {
+        grammar = element;
+        element = element.START;
+    }
+
+    if (grammar !== null) {
+        Object.getOwnPropertyNames(grammar).forEach(name => {
+            if (grammar[name] instanceof Jsleri) {
+                grammar[name].name = name;
+            }
+        });
+    }
 
     if (!(element instanceof Jsleri))
         throw '(Jsleri-->Optional) first argument must be an instance of Jsleri; got ' + typeof element;
@@ -629,7 +645,8 @@ Jsleri.prototype.setCallbacks = function (args) {
     if (first === undefined ||
         first === null ||
         typeof first === 'string' ||
-        first instanceof Jsleri) return;
+        first instanceof Jsleri ||
+        first.START !== undefined) return;
 
     if (isFunction(first.onEnter))
         this.onEnter = first.onEnter;

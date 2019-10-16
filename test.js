@@ -346,3 +346,36 @@ describe('Test JsonGrammar', () => {
     });
 
 });
+
+describe('Test Names', () => {
+
+    it('should set names to the elements', () => {
+        class TestGrammar extends Grammar {
+            static kwHi = Keyword('Hi');
+            static kwJsleri = Keyword('Jsleri')
+            static START = Sequence(this.kwHi, this.kwJsleri);
+        }
+
+        let testGrammar = new TestGrammar();
+        let res = testGrammar.parse('Hi Jsleri');
+
+        assert.equal(res.tree.children[0].element.name, 'START');
+        assert.equal(res.tree.children[0].children[0].element.name, 'kwHi');
+        assert.equal(res.tree.children[0].children[1].element.name, 'kwJsleri');
+    });
+
+    it('should set names when a simple object is used', () => {
+        let testGrammar = {};
+        testGrammar.kwHi = Keyword('Hi');
+        testGrammar.kwJsleri = Keyword('Jsleri')
+        testGrammar.START = Sequence(testGrammar.kwHi, testGrammar.kwJsleri);
+
+        testGrammar = new Grammar(testGrammar);
+        let res = testGrammar.parse('Hi Jsleri');
+
+        assert.equal(res.tree.children[0].element.name, 'START');
+        assert.equal(res.tree.children[0].children[0].element.name, 'kwHi');
+        assert.equal(res.tree.children[0].children[1].element.name, 'kwJsleri');
+    });
+
+});
