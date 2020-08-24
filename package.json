@@ -26,23 +26,23 @@
   },
   "homepage": "https://github.com/transceptor-technology/jsleri#readme",
   "dependencies": {
-    "@babel/runtime": "^7.8.3"
+    "@babel/runtime": "^7.11.2"
   },
   "devDependencies": {
-    "@babel/cli": "^7.8.3",
-    "@babel/core": "^7.8.3",
-    "@babel/plugin-proposal-class-properties": "^7.8.3",
-    "@babel/plugin-transform-object-assign": "^7.8.3",
-    "@babel/plugin-transform-runtime": "^7.8.3",
-    "@babel/preset-env": "^7.8.3",
-    "@babel/register": "^7.8.3",
+    "@babel/cli": "^7.10.5",
+    "@babel/core": "^7.11.4",
+    "@babel/plugin-proposal-class-properties": "^7.10.4",
+    "@babel/plugin-transform-object-assign": "^7.10.4",
+    "@babel/plugin-transform-runtime": "^7.11.0",
+    "@babel/preset-env": "^7.11.0",
+    "@babel/register": "^7.10.5",
     "babel-eslint": "^9.0.0",
     "babel-loader": "^8.0.5",
     "eslint": "^5.16.0",
     "mocha": "^5.2.0",
-    "terser": "^4.5.1",
-    "terser-webpack-plugin": "^2.3.1",
-    "webpack": "^4.41.5",
-    "webpack-cli": "^3.3.10"
+    "terser": "^4.8.0",
+    "terser-webpack-plugin": "^2.3.8",
+    "webpack": "^4.44.1",
+    "webpack-cli": "^3.3.12"
   }
 }
