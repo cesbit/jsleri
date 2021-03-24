@@ -1,13 +1,13 @@
 {
   "name": "jsleri",
-  "version": "1.1.11",
+  "version": "1.1.12",
   "description": "A JavaScript Left-right parser",
   "main": "lib/jsleri.js",
   "scripts": {
     "test": "./node_modules/.bin/mocha --require @babel/register",
     "lint": "./node_modules/.bin/eslint ./jsleri.js --color",
-    "build:dev": "./node_modules/.bin/webpack -d --progress --profile --colors",
-    "build:prod": "NODE_ENV='production' ./node_modules/.bin/webpack -p --progress --profile --colors",
+    "build:dev": "./node_modules/.bin/webpack --progress --devtool eval-cheap-source-map",
+    "build:prod": "NODE_ENV='production' ./node_modules/.bin/webpack --progress",
     "babel": "npx babel ./jsleri.js --out-dir lib && cp ./index.d.ts lib/ && echo \">WARNING: This \\`lib\\` folder is generated with \\`npm run babel\\` and should not be modified!\" > lib/README.md "
   },
   "repository": {
@@ -26,23 +26,23 @@
   },
   "homepage": "https://github.com/transceptor-technology/jsleri#readme",
   "dependencies": {
-    "@babel/runtime": "^7.11.2"
+    "@babel/runtime": "^7.13.10"
   },
   "devDependencies": {
-    "@babel/cli": "^7.10.5",
-    "@babel/core": "^7.11.4",
-    "@babel/plugin-proposal-class-properties": "^7.10.4",
-    "@babel/plugin-transform-object-assign": "^7.10.4",
-    "@babel/plugin-transform-runtime": "^7.11.0",
-    "@babel/preset-env": "^7.11.0",
-    "@babel/register": "^7.10.5",
-    "babel-eslint": "^9.0.0",
-    "babel-loader": "^8.0.5",
-    "eslint": "^5.16.0",
-    "mocha": "^5.2.0",
-    "terser": "^4.8.0",
-    "terser-webpack-plugin": "^2.3.8",
-    "webpack": "^4.44.1",
-    "webpack-cli": "^3.3.12"
+    "@babel/cli": "^7.13.10",
+    "@babel/core": "^7.13.10",
+    "@babel/plugin-proposal-class-properties": "^7.13.0",
+    "@babel/plugin-transform-object-assign": "^7.12.13",
+    "@babel/plugin-transform-runtime": "^7.13.10",
+    "@babel/preset-env": "^7.13.12",
+    "@babel/register": "^7.13.8",
+    "babel-eslint": "^10.1.0",
+    "babel-loader": "^8.2.2",
+    "eslint": "^7.22.0",
+    "mocha": "^8.3.2",
+    "terser": "^5.6.1",
+    "terser-webpack-plugin": "^5.1.1",
+    "webpack": "^5.27.2",
+    "webpack-cli": "^4.5.0"
   }
 }

@@ -62,7 +62,7 @@ Or... download the latest release from [here](https://github.com/transceptor-tec
 For example:
 ```html
 <!-- Add this line to the <head> section to expose window.jsleri -->
-<script src="jsleri-1.1.6.min.js"></script>
+<script src="jsleri-1.1.12.min.js"></script>
 ```
 
 ## Related projects
