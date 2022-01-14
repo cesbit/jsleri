@@ -1,3 +1,6 @@
+[![CI](https://github.com/transceptor-technology/jsleri/workflows/CI/badge.svg)](https://github.com/transceptor-technology/jsleri/actions)
+[![Release Version](https://img.shields.io/github/release/transceptor-technology/jsleri)](https://github.com/transceptor-technology/jsleri/releases)
+
 # Javascript Left-Right Parser
 Jsleri is an easy-to-use language parser for JavaScript.
 
