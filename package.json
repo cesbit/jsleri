@@ -1,6 +1,6 @@
 {
   "name": "jsleri",
-  "version": "1.1.13",
+  "version": "1.1.14",
   "description": "A JavaScript Left-right parser",
   "main": "lib/jsleri.js",
   "scripts": {
