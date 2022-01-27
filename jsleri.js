@@ -7,7 +7,7 @@
  *  This project was inspired by lrparsing (http://lrparsing.sourceforge.net/), a Python
  *  parser written by Russell Stuart, 2014-05-29.
  *
- *  copyright 2015, Jeroen van der Heijden (Transceptor Technology)
+ *  copyright 2015, Jeroen van der Heijden (Cesbit)
  */
 
 var version = process.env.VERSION || '';

@@ -12,7 +12,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/transceptor-technology/jsleri.git"
+    "url": "git+https://github.com/cesbit/jsleri.git"
   },
   "keywords": [
     "Language",
@@ -22,9 +22,9 @@
   "author": "Jeroen van der Heijden",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/transceptor-technology/jsleri/issues"
+    "url": "https://github.com/cesbit/jsleri/issues"
   },
-  "homepage": "https://github.com/transceptor-technology/jsleri#readme",
+  "homepage": "https://github.com/cesbit/jsleri#readme",
   "dependencies": {
     "@babel/runtime": "^7.14.5"
   },

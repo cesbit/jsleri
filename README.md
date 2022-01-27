@@ -1,5 +1,5 @@
-[![CI](https://github.com/transceptor-technology/jsleri/workflows/CI/badge.svg)](https://github.com/transceptor-technology/jsleri/actions)
-[![Release Version](https://img.shields.io/github/release/transceptor-technology/jsleri)](https://github.com/transceptor-technology/jsleri/releases)
+[![CI](https://github.com/cesbit/jsleri/workflows/CI/badge.svg)](https://github.com/cesbit/jsleri/actions)
+[![Release Version](https://img.shields.io/github/release/cesbit/jsleri)](https://github.com/cesbit/jsleri/releases)
 
 # Javascript Left-Right Parser
 Jsleri is an easy-to-use language parser for JavaScript.
@@ -61,7 +61,7 @@ import * as jsleri from 'jsleri';
 
 ```
 
-Or... download the latest release from [here](https://github.com/transceptor-technology/jsleri/releases/latest) and load the file in inside your project.
+Or... download the latest release from [here](https://github.com/cesbit/jsleri/releases/latest) and load the file in inside your project.
 For example:
 ```html
 <!-- Add this line to the <head> section to expose window.jsleri -->
@@ -69,10 +69,10 @@ For example:
 ```
 
 ## Related projects
-- [pyleri](https://github.com/transceptor-technology/pyleri): Python parser (can export grammar to pyleri, cleri and jsleri)
-- [libcleri](https://github.com/transceptor-technology/libcleri): C parser
-- [goleri](https://github.com/transceptor-technology/goleri): Go parser
-- [jleri](https://github.com/transceptor-technology/jleri): Java parser
+- [pyleri](https://github.com/cesbit/pyleri): Python parser (can export grammar to pyleri, cleri and jsleri)
+- [libcleri](https://github.com/cesbit/libcleri): C parser
+- [goleri](https://github.com/cesbit/goleri): Go parser
+- [jleri](https://github.com/cesbit/jleri): Java parser
 
 
 ## Quick usage
