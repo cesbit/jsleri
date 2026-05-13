@@ -1,36 +1,27 @@
-/* global require, __dirname, module, process */
-const path = require('path');
-const TerserPlugin = require('terser-webpack-plugin');
-const webpack = require('webpack');
-const VERSION = require(path.resolve(__dirname, './package.json')).version;
+/* global process */
+import path from 'path';
+import TerserPlugin from 'terser-webpack-plugin';
+import { fileURLToPath } from 'url';
 
-const filename = process.env.NODE_ENV === 'production'
-    ? `jsleri-${VERSION}.min.js`
-    : `jsleri-${VERSION}.js`;
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-const config = {
+export default {
     mode: 'production',
     entry: './jsleri.js',
     output: {
-        filename,
         path: path.resolve(__dirname, './dist'),
+        filename: process.env.NODE_ENV === 'production' ? 'jsleri.min.js' : 'jsleri.js',
         library: 'jsleri',
         libraryTarget: 'umd'
     },
     module: {
         rules: [{
-            test: /\.(js)$/,
+            test: /\.js/,
             exclude: /node_modules/,
             loader: 'babel-loader',
         }],
     },
-    plugins: [
-        new webpack.DefinePlugin({
-            'process.env': {
-                'VERSION': JSON.stringify(VERSION),
-            },
-        }),
-    ],
     optimization: {
         minimizer: [
             new TerserPlugin({
@@ -42,5 +33,3 @@ const config = {
         ]
     }
 };
-
-module.exports = config;

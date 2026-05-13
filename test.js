@@ -16,7 +16,7 @@ import {
     THIS,
     Grammar,
     EOS
-} from './jsleri';
+} from './jsleri.js';
 
 
 class JsonGrammar extends Grammar {
